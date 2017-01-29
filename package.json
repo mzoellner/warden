@@ -8,7 +8,7 @@
   "scripts": {
     "g-pull": "git pull",
     "g-com": "npm run g-pull && git add -A . && git commit -a -m 'warden update'",
-    "g-push": "npm run g-com && git push",
+    "g-push": "git push",
     "deploy": "npm run g-push && npm publish"
   },
   "repository": {
