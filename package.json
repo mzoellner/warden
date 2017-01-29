@@ -6,8 +6,9 @@
     "warden": "./index.js"
   },
   "scripts": {
-    "g-com": "git add -A . && git commit -a -m 'warden update'",
-    "g-push": "npm run g-com && git push origin warden && git checkout master",
+    "g-pull": "git pull",
+    "g-com": "npm run g-pull && git add -A . && git commit -a -m 'warden update'",
+    "g-push": "npm run g-com && git push",
     "deploy": "npm run g-push && npm publish"
   },
   "repository": {
