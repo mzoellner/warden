@@ -1,10 +1,14 @@
 {
-  "name": "warden",
-  "version": "1.0.0",
+  "name": "@joris.coppieters/repository-warden",
+  "version": "1.0.1",
   "description": "Print out warden information in your repository",
-  "main": "index.js",
+  "bin": {
+    "warden": "./index.js"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "g-com": "git add -A . && git commit -a -m 'repository-warden update'",
+    "g-push": "npm run g-com && git push origin repository-warden && git checkout master",
+    "deploy": "npm run g-push && npm publish"
   },
   "repository": {
     "type": "git",
@@ -17,6 +21,10 @@
   },
   "homepage": "https://github.com/JorisCoppieters/warden#readme",
   "devDependencies": {
+    "bluebird": "^3.4.7",
+    "minimist": "^1.2.0"
+  },
+  "dependencies": {
     "bluebird": "^3.4.7",
     "minimist": "^1.2.0"
   }
