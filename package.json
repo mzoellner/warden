@@ -1,13 +1,13 @@
 {
-  "name": "@joris.coppieters/repository-warden",
+  "name": "repository-warden",
   "version": "1.0.1",
   "description": "Print out warden information in your repository",
   "bin": {
     "warden": "./index.js"
   },
   "scripts": {
-    "g-com": "git add -A . && git commit -a -m 'repository-warden update'",
-    "g-push": "npm run g-com && git push origin repository-warden && git checkout master",
+    "g-com": "git add -A . && git commit -a -m 'warden update'",
+    "g-push": "npm run g-com && git push origin warden && git checkout master",
     "deploy": "npm run g-push && npm publish"
   },
   "repository": {
