@@ -1,15 +1,9 @@
 {
   "name": "repository-warden",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Print out warden information in your repository",
   "bin": {
     "warden": "./index.js"
-  },
-  "scripts": {
-    "g-pull": "git pull",
-    "g-com": "npm run g-pull && git add -A . && git commit -a -m 'warden update'",
-    "g-push": "git push",
-    "deploy": "npm run g-push && npm publish"
   },
   "repository": {
     "type": "git",
