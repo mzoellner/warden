@@ -6,8 +6,8 @@
 // Utilities:
 // ******************************
 
-var print = require('./utilities/print');
-var fileUtil = require('./utilities/file');
+var cprint = require('color-print');
+var fsp = require('fs-process');
 var path = require('path');
 var fs = require('fs');
 
@@ -38,12 +38,12 @@ if (g_ARGV['help']) {
 // ******************************
 
 function wardenHelp () {
-    print.rainbow('Warden Help');
-    print.white('');
-    print.yellow('Version ' + c_VERSION);
-    print.white('');
-    print.green('Options:');
-    print.white('--help\t\tShow this menu');
+    cprint.rainbow('Warden Help');
+    cprint.white('');
+    cprint.yellow('Version ' + c_VERSION);
+    cprint.white('');
+    cprint.green('Options:');
+    cprint.white('--help\t\tShow this menu');
 }
 
 // ******************************
@@ -55,7 +55,7 @@ function printWardenInfo (in_directory) {
     if (wardenFile) {
         printWardenFile(wardenFile);
     } else {
-        print.yellow('No warden for this area...');
+        cprint.yellow('No warden for this area...');
     }
 }
 
@@ -85,7 +85,7 @@ function findWarden (in_directory) {
         }
 
         if (loopCount++ > maxUpwardsIteration) {
-            print.yellow('Too many loop iterations! Invalid top directory: ' + directory);
+            cprint.yellow('Too many loop iterations! Invalid top directory: ' + directory);
             break;
         }
 
@@ -106,13 +106,13 @@ function printWardenFile (in_wardenFile, in_indent) {
         in_indent = '';
     }
 
-    fileUtil.read(in_wardenFile, function (wardenFileContents) {
+    fsp.read(in_wardenFile, function (wardenFileContents) {
         var directory = path.dirname(in_wardenFile);
         try {
             var wardenData = JSON.parse(wardenFileContents);
-            console.log(in_indent + print.toWhite(directory) + ' ' + print.toCyan('=>') + ' ' + print.toGreen(wardenData.name));
+            console.log(in_indent + cprint.toWhite(directory) + ' ' + cprint.toCyan('=>') + ' ' + cprint.toGreen(wardenData.name));
         } catch (e) {
-            print.yellow('Invalid warden file: ' + in_wardenFile);
+            cprint.yellow('Invalid warden file: ' + in_wardenFile);
             return;
         }
     });
