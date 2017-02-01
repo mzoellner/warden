@@ -27,7 +27,7 @@ var fs = require('fs');
 // Constants:
 // ******************************
 
-const c_VERSION = '0.1 alpha';
+const c_VERSION = '1.0.3';
 
 // ******************************
 // Globals:
