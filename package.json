@@ -1,10 +1,11 @@
 {
   "name": "repository-warden",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Print out warden information in your repository",
   "bin": {
-    "warden": "./index.js"
+    "warden": "./dist/index.js"
   },
+  "typings": "./dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/JorisCoppieters/warden.git"
@@ -19,5 +20,15 @@
     "color-print": "^1.0.1",
     "fs-process": "^1.0.0",
     "minimist": "^1.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^2.8.3",
+    "ts-node-dev": "^1.0.0-pre.21",
+    "@types/node": "^10.0.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "ts-node-dev --respawn ./src/index.ts",
+    "prepublish": "tsc"
   }
 }
