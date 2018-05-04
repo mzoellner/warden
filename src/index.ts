@@ -36,7 +36,6 @@ const g_ARGV = require('minimist')(process.argv.slice(2));
 // ******************************
 // Script:
 // ******************************
-
 if (g_ARGV['help']) {
     wardenHelp();
 } else {

@@ -2,11 +2,7 @@ const cprint = require('color-print');
 const path = require('path');
 const fs = require('fs');
 
-export function findWarden (in_directory: string) {
-    if (!in_directory) {
-        in_directory = './';
-    }
-
+export function findWarden (in_directory: string = './') {
     let directory = path.resolve(process.cwd(), in_directory);
     let wardenFile = path.resolve(directory, '.warden');
 

@@ -1,4 +1,6 @@
-{
-  "name": "Joris Coppieters",
-  "email": "joris.coppieters@gmail.com"
+module.exports = {
+  humans: [
+      {name: 'Elwyn', email: 'elwyn@trademe.co.nz'},
+      {name: 'Craig', email: 'craig@trademe.com'}
+  ]
 }
