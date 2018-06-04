@@ -13,8 +13,7 @@ export function printWardenInfo (in_directory: string): void {
     }
 }
 
-async function printWardenFile (in_wardenFile: string, in_indent: string = '') {
-
+export async function printWardenFile (in_wardenFile: string, in_indent: string = '') {
     const wardenFileContents = await readWardenFile(in_wardenFile);
     if (!wardenFileContents) {
         return;

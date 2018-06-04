@@ -2,6 +2,7 @@
 
 'use strict';
 import {printWardenInfo} from "./print";
+import {wardensForChangedAreas} from "./find-warden";
 
 // ******************************
 //
@@ -38,10 +39,11 @@ const g_ARGV = require('minimist')(process.argv.slice(2));
 // ******************************
 if (g_ARGV['help']) {
     wardenHelp();
+} else if (g_ARGV['all']) {
+    wardensForChangedAreas();
 } else {
     printWardenInfo(g_ARGV['dir']);
 }
-
 // ******************************
 // Functions:
 // ******************************

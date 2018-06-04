@@ -19,16 +19,19 @@
   "dependencies": {
     "color-print": "^1.0.1",
     "fs-process": "^1.0.0",
-    "minimist": "^1.2.0"
+    "jest-changed-files": "^23.0.1",
+    "minimist": "^1.2.0",
+    "modifiled": "^0.0.4"
   },
   "devDependencies": {
-    "typescript": "^2.8.3",
+    "@types/node": "^10.0.3",
     "ts-node-dev": "^1.0.0-pre.21",
-    "@types/node": "^10.0.3"
+    "typescript": "^2.8.3"
   },
   "scripts": {
     "build": "tsc",
     "start": "ts-node-dev --respawn ./src/index.ts",
+    "watch": "tsc --watch",
     "prepublish": "tsc"
   }
 }
