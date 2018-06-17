@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 'use strict';
-import {printWardenInfo} from "./print";
+import { printWardenInfo } from './print';
+import { mapWardensForChangedAreas } from './find-warden';
 
 // ******************************
 //
@@ -38,10 +39,11 @@ const g_ARGV = require('minimist')(process.argv.slice(2));
 // ******************************
 if (g_ARGV['help']) {
     wardenHelp();
-} else {
+} else if (g_ARGV['dir']) {
     printWardenInfo(g_ARGV['dir']);
+} else {
+    mapWardensForChangedAreas();
 }
-
 // ******************************
 // Functions:
 // ******************************

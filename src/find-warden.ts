@@ -1,8 +1,11 @@
 const cprint = require('color-print');
 const path = require('path');
 const fs = require('fs');
+import { printWardenFile, printWardenMap } from './print';
+import { getWardenMap } from './wardenMap';
+const modifiled = require('modifiled');
 
-export function findWarden (in_directory: string = './') {
+export function findWarden (in_directory: string = './'): string | false {
     let directory = path.resolve(process.cwd(), in_directory);
     let wardenFile = path.resolve(directory, '.warden');
 
@@ -33,4 +36,17 @@ export function findWarden (in_directory: string = './') {
     }
 
     return wardenFile;
+}
+
+function onlyUnique(value: any, index: number, self: Array<string>) {
+  return self.indexOf(value) === index;
+}
+
+export async function mapWardensForChangedAreas () {
+  let changedFiles = modifiled.default(process.cwd(), {vcs:1});
+  if (changedFiles) {
+    const changedPaths = changedFiles.map((file:any) => path.dirname(file)).filter(onlyUnique);
+    const wardenMap = await getWardenMap(changedPaths);
+    printWardenMap(wardenMap);
+  }
 }
