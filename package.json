@@ -20,8 +20,7 @@
     "color-print": "^1.0.1",
     "fs-process": "^1.0.0",
     "jest-changed-files": "^23.0.1",
-    "minimist": "^1.2.0",
-    "modifiled": "^0.0.4"
+    "minimist": "^1.2.0"
   },
   "devDependencies": {
     "@types/node": "^10.0.3",
