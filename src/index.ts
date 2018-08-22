@@ -3,6 +3,7 @@
 'use strict';
 import { printWardenInfo } from './print';
 import { mapWardensForChangedAreas } from './find-warden';
+import { init } from './init';
 
 // ******************************
 //
@@ -41,6 +42,8 @@ if (g_ARGV['help']) {
     wardenHelp();
 } else if (g_ARGV['dir']) {
     printWardenInfo(g_ARGV['dir']);
+} else if (g_ARGV['ts']) {
+    init();
 } else {
     mapWardensForChangedAreas();
 }
