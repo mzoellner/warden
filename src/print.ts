@@ -38,7 +38,12 @@ console.log(
 }
 
 function sortMapByPathsLength (_map: Map<string, Array<string>>): Map<string, Array<string>> {
-    let _sortedMap = new Map([..._map.entries()].sort( (x, y) => x[1].length - y[1].length ).reverse());
+    let _sortedMap = new Map( 
+        [..._map.entries()]
+        .sort( (x, y) => x[1].length - y[1].length )
+        .reverse()
+    );
+    
     return _sortedMap;
 }
 
