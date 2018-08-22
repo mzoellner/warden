@@ -573,9 +573,9 @@ mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-modifiled@^0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/modifiled/-/modifiled-0.0.4.tgz#e9f72c4d1c68eb4c69292485c1ba2593615437f3"
+modifiled@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/modifiled/-/modifiled-0.0.5.tgz#86b56d475808e5420cace4996f9370a48d0a88d4"
   dependencies:
     center-align "^1.0.1"
     cli-color "^1.2.0"
