@@ -3,18 +3,27 @@ const path = require('path');
 const fs = require('fs');
 
 export class Changeset {
-    public readonly paths: Array<string>;
-    public readonly changeList: Array<string>;
+    private readonly paths: Array<string>;
 
     constructor (pathsArray: Array<string>) {
         this.paths = pathsArray;
-        this.changeList = this.paths.forEach( path => this.findWarden(path) );
+        // this.changeList = this.paths.forEach( path => this.findWarden(path) );
     }
 
-    public mapChangedPaths (changedFiles: Array<string>): Array<string> {
-        const changedPaths = changedFiles.map((file:any) => path.dirname(file)).filter(this.onlyUnique);
+    public mapUniquePaths (): Array<string> {
+        const changedPaths = this.paths.map((file:any) => path.dirname(file));
+        const uniquePaths = changedPaths.map((file:any) => path.dirname(file)).filter(this.onlyUnique);
+        console.log(uniquePaths);
+        return uniquePaths;
+        // ------->
+    }
 
-        return changedPaths;
+    public sortPaths (path: Array<string>): Array<string> {
+        const sortedPaths = path
+            .sort( path => path.length )
+            .reverse();
+        
+        return sortedPaths;
     }
 
     private findWarden (in_directory: string = './'): string | false {
@@ -36,7 +45,7 @@ export class Changeset {
             }
     
             if (loopCount++ > maxUpwardsIteration) {
-                cprint.yellow('Too many loop iterations! Invalid top directory: ' + directory);
+                cprint.yellow('Too many loop iterations! Invalid top directory: ' + directory); // throw
                 break;
             }
     
@@ -52,5 +61,5 @@ export class Changeset {
 
     private onlyUnique(value: any, index: number, self: Array<string>) {
         return self.indexOf(value) === index;
-    }
+      }
 }

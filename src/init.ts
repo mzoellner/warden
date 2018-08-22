@@ -5,18 +5,9 @@ import { Changeset } from './Changeset';
 const modifiled = require('modifiled');
 
 export async function init () {
-    let changedFiles = modifiled.default(process.cwd(), {vcs:1});
+    let _changedFiles = modifiled.default(process.cwd(), {vcs:1});
 
-    const _changeSet = new Changeset(changedFiles);
+    const _changeSet = new Changeset(_changedFiles);
 
-    if (_changeSet) {
-      const changedPaths = changedFiles.map((file:any) => path.dirname(file)).filter(onlyUnique);
-      console.log('changedPaths: ', changedPaths);
-
-      // new WardenFile(changeSet);
-      const wardenMap = await getWardenMap(changedPaths);
-      
-      
-      printWardenMap(wardenMap);
-    }
+    _changeSet.mapUniquePaths();
 }
