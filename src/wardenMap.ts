@@ -11,6 +11,7 @@ export async function getWardenMap (_changedPaths:any): Promise<Map<string, Arra
     if (!wardenFileContents) {
       continue;
     }
+
     wardenFileContents.humans.forEach((human) => {
       if (wardenMap.has(human.name)) {
         wardenMap.get(human.name).push(path);
