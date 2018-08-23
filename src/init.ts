@@ -1,7 +1,6 @@
 const path = require('path');
-import { printWardenMap } from './print';
-import { getWardenMap } from './wardenMap';
 import { Changeset } from './Changeset';
+import { WardenFile } from './WardenFile';
 const modifiled = require('modifiled');
 
 export function init () {
@@ -13,6 +12,12 @@ export function init () {
     const _changedFiles: Array<string> = modifiled.default(process.cwd(), {vcs:1});
 
     const _changeSet = new Changeset(_changedFiles);
+
+    // const filePath = 'C:\\Data\\Solutions\\TradeMe.FrEnd\\packages\\frend\\web\\client\\src\\app\\Main\\.warden';
+
+    // let wardenFile = new WardenFile(filePath);
+
+    // console.log(wardenFile);
 
     // _changeSet.print();
 }

@@ -21,18 +21,26 @@ export class Changeset {
 
     private buildWardenFileLocationArray (_changedFilesArray: Array<string>): void {
         for (let i = 0 ; i < _changedFilesArray.length ; i++) {
-            const _wardenFileLocation: string = this.findAndCheckWardenFileValidity(_changedFilesArray[i]);
-
-            this.wardenFileLocationArray.push(_wardenFileLocation);
+            const _wardenFileLocation: string = this.findWardenFileAndCheckValidity(_changedFilesArray[i]);
+            if (_wardenFileLocation) {
+                this.wardenFileLocationArray.push(_wardenFileLocation);
+            } else {
+                continue
+            }
+            
         }
     }
 
     private buildWardenFileArray (_wardenFileLocationArray: Array<string>): void {
-        for ( let i = 0 ; i < this.wardenFileLocationArray.length ; i++ ) {
-            const wardenFile = new WardenFile(this.wardenFileLocationArray[i]);
-            this.wardenFileArray.push(wardenFile);
+        if (this.wardenFileLocationArray.length) {
+            for ( let i = 0 ; i < this.wardenFileLocationArray.length ; i++ ) {
+                const wardenFile = new WardenFile(this.wardenFileLocationArray[i]);
+                this.wardenFileArray.push(wardenFile);
+            }
+            console.log(this.wardenFileArray);
+        } else {
+            // Handle empty location array case
         }
-        console.log(this.wardenFileArray);
     }
 
     // private getWardenMap (_changedFilesArray:any): any {
@@ -40,7 +48,7 @@ export class Changeset {
       
     //     for (let i=0 ; i < _changedFilesArray.length ; i++) {
     //       let path = _changedFilesArray[i];
-    //       let wardenLocation = this.findAndCheckWardenFileValidity(path);
+    //       let wardenLocation = this.findWardenFileAndCheckValidity(path);
     //       if (!wardenLocation) {
     //         continue;
     //       }
@@ -57,7 +65,7 @@ export class Changeset {
     //     return wardenMap;
     //   }
 
-    private findAndCheckWardenFileValidity (_path:string): string {
+    private findWardenFileAndCheckValidity (_path:string): string {
         if (_path) {
             const location = this.findWarden(_path);
             if (!location) {
@@ -67,6 +75,24 @@ export class Changeset {
             return wardenLocation;
         }
         return '';    
+    }
+
+    
+
+    private checkWardenFileValidity (location: string): string {
+
+        return location;     
+        // try {
+        //     const wardenLocation = location;
+        //     // if (!this.isWardenFileValid(wardenLocation)) {
+        //     //     cprint.yellow('Invalid warden file: ' + location);
+        //     //     return;
+        //     // }
+        //     return wardenLocation;
+        // } catch (e) {
+        //     console.log('error: ', e);
+        //     cprint.yellow('Could not read warden file: ' + location);
+        // }
     }
 
     private findWarden (in_directory: string = './'): string | undefined {
@@ -100,25 +126,6 @@ export class Changeset {
         }
     
         return wardenFile;
-    }
-
-    private checkWardenFileValidity (location: string): string {
-        // const fileContents = fs.readFileSync(location, 'utf8']);
-        
-        // const _wardenFile = new WardenFile(fileContents, location);
-
-        return location;     
-        // try {
-        //     const wardenLocation = location;
-        //     // if (!this.isWardenFileValid(wardenLocation)) {
-        //     //     cprint.yellow('Invalid warden file: ' + location);
-        //     //     return;
-        //     // }
-        //     return wardenLocation;
-        // } catch (e) {
-        //     console.log('error: ', e);
-        //     cprint.yellow('Could not read warden file: ' + location);
-        // }
     }
     
     private isWardenFileValid (wardenLocation: string): boolean {
