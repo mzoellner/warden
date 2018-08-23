@@ -4,13 +4,15 @@ import { getWardenMap } from './wardenMap';
 import { Changeset } from './Changeset';
 const modifiled = require('modifiled');
 
-export async function init () {
-    let _changedFiles = modifiled.default(process.cwd(), {vcs:1});
+export function init () {
+    // Notes: This should basically just get the changes from modifiled,
+    // and new up a changeset. The changeset should initialize and shape itself.
+    // The changeset should make up WardenFiles data objects.
+    // Then the changeset should be printed, from here (call print method on changeset.)
+
+    let _changedFiles: Array<string> = modifiled.default(process.cwd(), {vcs:1});
 
     const _changeSet = new Changeset(_changedFiles);
 
-    const uniquePaths = _changeSet.mapUniquePaths();
-
-    const wardenFileArray = _changeSet.findWardenFilesForPaths(uniquePaths);
-    console.log(wardenFileArray);
+    // _changeSet.print();
 }

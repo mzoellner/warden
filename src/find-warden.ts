@@ -46,6 +46,7 @@ export async function mapWardensForChangedAreas () {
   let changedFiles = modifiled.default(process.cwd(), {vcs:1});
   if (changedFiles) {
     const changedPaths = changedFiles.map((file:any) => path.dirname(file)).filter(onlyUnique);
+    // --->
     const wardenMap = await getWardenMap(changedPaths);
     printWardenMap(wardenMap);
   }
