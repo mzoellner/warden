@@ -9,5 +9,8 @@ export async function init () {
 
     const _changeSet = new Changeset(_changedFiles);
 
-    _changeSet.mapUniquePaths();
+    const uniquePaths = _changeSet.mapUniquePaths();
+
+    const wardenFileArray = _changeSet.findWardenFilesForPaths(uniquePaths);
+    console.log(wardenFileArray);
 }

@@ -4,21 +4,20 @@ const fs = require('fs');
 
 export class Changeset {
     private readonly paths: Array<string>;
+    public wardenFileArray: Array<string>;
 
     constructor (pathsArray: Array<string>) {
         this.paths = pathsArray;
-        // this.changeList = this.paths.forEach( path => this.findWarden(path) );
     }
 
     public mapUniquePaths (): Array<string> {
         const changedPaths = this.paths.map((file:any) => path.dirname(file));
         const uniquePaths = changedPaths.map((file:any) => path.dirname(file)).filter(this.onlyUnique);
-        console.log(uniquePaths);
+
         return uniquePaths;
-        // ------->
     }
 
-    public sortPaths (path: Array<string>): Array<string> {
+    public sortByPaths (path: Array<string>): Array<string> {
         const sortedPaths = path
             .sort( path => path.length )
             .reverse();
@@ -26,7 +25,17 @@ export class Changeset {
         return sortedPaths;
     }
 
-    private findWarden (in_directory: string = './'): string | false {
+    public findWardenFilesForPaths (uniquePaths: Array<string>): Array<string> {
+        let wardenFileArray: Array<string> = [];
+        for ( let i = 0; i < uniquePaths.length; i++) {
+            wardenFileArray.push(this.findWarden(uniquePaths[i]));
+        }
+        this.wardenFileArray = wardenFileArray;
+
+        return this.wardenFileArray;
+    }
+
+    private findWarden (in_directory: string = './'): string {
         let directory = path.resolve(process.cwd(), in_directory);
         let wardenFile = path.resolve(directory, '.warden');
     
