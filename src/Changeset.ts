@@ -4,68 +4,70 @@ const fs = require('fs');
 import { WardenFile } from './WardenFile';
 
 export class Changeset {
-    private readonly paths: Array<string>;
-    private readonly wardenMap;
-    private readonly wardenFileArray;
+    private readonly changedFilesArray: Array<string>;
+    private readonly wardenFileLocationArray: Array<string> = [];
+    private readonly wardenFileArray: Array<WardenFile> = [];
 
-    constructor (pathsArray: Array<string>) {
-        // In this constructor, the paths array should be initialized and shaped.
+    constructor (_changedFiles: Array<string>) {
+        // In this constructor, the changedFilesArray array should be initialized and shaped.
         // It should new up WardenFiles as needed.
         // All of these should be private methods referenced by the constructor.
         // The consumer shouldn't worry about anything to do with shaping the data.
 
-        // const uniquePaths = _changeSet.mapUniquePaths();?
-        this.paths = pathsArray;
-        this.wardenFileArray = this.findWardenFilesForPaths(this.paths);
-        this.wardenMap = this.getWardenMap(this.wardenFileArray);
-
-        // Changeset.printWardenMap();
+        this.changedFilesArray = _changedFiles;
+        this.buildWardenFileLocationArray(this.changedFilesArray);
+        this.buildWardenFileArray(this.wardenFileLocationArray);
     }
 
-    private mapUniquePaths (): Array<string> {
-        const uniquePaths = this.paths.map((file:any) => path.dirname(file)).filter(this.onlyUnique);
+    private buildWardenFileLocationArray (_changedFilesArray: Array<string>): void {
+        for (let i = 0 ; i < _changedFilesArray.length ; i++) {
+            const _wardenFileLocation: string = this.findAndCheckWardenFileValidity(_changedFilesArray[i]);
 
-        return uniquePaths;
-    }
-
-    private sortByPaths (path: Array<string>): Array<string> {
-        const sortedPaths = path
-            .sort( path => path.length )
-            .reverse();
-        
-        return sortedPaths;
-    }
-
-    private findWardenFilesForPaths (uniquePaths: Array<string>): Array<string> {
-        let wardenFileArray: Array<string> = [];
-        for ( let i = 0; i < uniquePaths.length; i++) {
-            wardenFileArray.push(this.findWarden(uniquePaths[i]));
+            this.wardenFileLocationArray.push(_wardenFileLocation);
         }
-
-        return wardenFileArray;
     }
 
-    private getWardenMap (_changedPaths:any): any {
-        let wardenMap = new Map();
+    private buildWardenFileArray (_wardenFileLocationArray: Array<string>): void {
+        for ( let i = 0 ; i < this.wardenFileLocationArray.length ; i++ ) {
+            const wardenFile = new WardenFile(this.wardenFileLocationArray[i]);
+            this.wardenFileArray.push(wardenFile);
+        }
+        console.log(this.wardenFileArray);
+    }
+
+    // private getWardenMap (_changedFilesArray:any): any {
+    //     let wardenMap = new Map();
       
-        for (let i=0 ; i < _changedPaths.length ; i++) {
-          let path = _changedPaths[i];
-          let wardenFileContents = this.parseWardenFileName(path);
-          if (!wardenFileContents) {
-            continue;
-          }
+    //     for (let i=0 ; i < _changedFilesArray.length ; i++) {
+    //       let path = _changedFilesArray[i];
+    //       let wardenLocation = this.findAndCheckWardenFileValidity(path);
+    //       if (!wardenLocation) {
+    //         continue;
+    //       }
       
-          wardenFileContents.humans.forEach((human) => {
-            if (wardenMap.has(human.name)) {
-              wardenMap.get(human.name).push(path);
-            } else {
-              wardenMap.set(human.name, [path]);
+    //       wardenLocation.humans.forEach((human) => {
+    //         if (wardenMap.has(human.name)) {
+    //           wardenMap.get(human.name).push(path);
+    //         } else {
+    //           wardenMap.set(human.name, [path]);
+    //         }
+    //       });
+    //     }
+      
+    //     return wardenMap;
+    //   }
+
+    private findAndCheckWardenFileValidity (_path:string): string {
+        if (_path) {
+            const location = this.findWarden(_path);
+            if (!location) {
+            return '';
             }
-          });
+            const wardenLocation = this.checkWardenFileValidity(location);
+            return wardenLocation;
         }
-      
-        return wardenMap;
-      }
+        return '';    
+    }
 
     private findWarden (in_directory: string = './'): string | undefined {
         let directory = path.resolve(process.cwd(), in_directory);
@@ -93,58 +95,51 @@ export class Changeset {
             wardenFile = path.resolve(directory, '.warden');
         }
     
-        if (! fs.existsSync(wardenFile)) {
+        if (!fs.existsSync(wardenFile)) {
             return undefined;
         }
     
         return wardenFile;
     }
 
-    private parseWardenFileName (_path:string | undefined): WardenFile | undefined {
-        if (_path) {
-            const location = this.findWarden(_path);
-            if (!location) {
-            return;
-            }
-            const parsedWardenFile = this.readWardenFile(location);
-            return parsedWardenFile;
-        }        
-    }
+    private checkWardenFileValidity (location: string): string {
+        // const fileContents = fs.readFileSync(location, 'utf8']);
+        
+        // const _wardenFile = new WardenFile(fileContents, location);
 
-    private readWardenFile (in_wardenFile: string): WardenFile|undefined {
-        const fileContents = fs.readFileSync(in_wardenFile);
-        
-        new WardenFile(fileContents, in_wardenFile);
-        
-        
+        return location;     
         // try {
-        //     const wardenFileContents = in_wardenFile;
-        //     if (!this.isWardenFileValid(wardenFileContents)) {
-        //         cprint.yellow('Invalid warden file: ' + in_wardenFile);
-        //         return;
-        //     }
-        //     return wardenFileContents;
+        //     const wardenLocation = location;
+        //     // if (!this.isWardenFileValid(wardenLocation)) {
+        //     //     cprint.yellow('Invalid warden file: ' + location);
+        //     //     return;
+        //     // }
+        //     return wardenLocation;
         // } catch (e) {
-        //     cprint.yellow('Could not read warden file: ' + in_wardenFile);
+        //     console.log('error: ', e);
+        //     cprint.yellow('Could not read warden file: ' + location);
         // }
     }
+    
+    private isWardenFileValid (wardenLocation: string): boolean {
+        console.log('wardenLocation: ', wardenLocation);
+        // if (!wardenLocation.humans || Array.isArray(wardenLocation) || (!!wardenLocation.humans && !wardenLocation.humans.length)) {
+        //     cprint.yellow('Warden file does not contain humans');
+        //     return false;
+        // }
+        // const isHumansInvalid = wardenLocation.humans.some(human => !human.name || !human.email);
+        // if (isHumansInvalid) {
+        //     cprint.yellow('Humans in warden file are not in valid format');
+        //     return false;
+        // }
+        return true;
+    }
 
-    // private isWardenFileValid (wardenFileContents: WardenFile): <boolean> {
-    //     if (!wardenFileContents.humans ||
-    //         Array.isArray(wardenFileContents) ||
-    //         (!!wardenFileContents.humans && !wardenFileContents.humans.length)) {
-    //         cprint.yellow('Warden file does not contain humans');
-    //         return false;
-    //     }
-    //     const isHumansInvalid = wardenFileContents.humans.some(human => !human.name || !human.email);
-    //     if (isHumansInvalid) {
-    //         cprint.yellow('Humans in warden file are not in valid format');
-    //         return false;
-    //     }
-    //     return true;
+    // private sortBychangedFilesArray (path: Array<string>): Array<string> {
+    //     const sortedchangedFilesArray = path
+    //         .sort( path => path.length )
+    //         .reverse();
+        
+    //     return sortedchangedFilesArray;
     // }
-
-    private onlyUnique(value: any, index: number, self: Array<string>) {
-        return self.indexOf(value) === index;
-      }
 }

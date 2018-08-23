@@ -10,7 +10,7 @@ export function init () {
     // The changeset should make up WardenFiles data objects.
     // Then the changeset should be printed, from here (call print method on changeset.)
 
-    let _changedFiles: Array<string> = modifiled.default(process.cwd(), {vcs:1});
+    const _changedFiles: Array<string> = modifiled.default(process.cwd(), {vcs:1});
 
     const _changeSet = new Changeset(_changedFiles);
 
