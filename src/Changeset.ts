@@ -4,68 +4,50 @@ const fs = require('fs');
 import { WardenFile } from './WardenFile';
 
 export class Changeset {
-    private readonly changedFilesArray: Array<string>;
     private readonly wardenFileLocationArray: Array<string> = [];
     private readonly wardenFileArray: Array<WardenFile> = [];
-    private readonly wardenMap: Map<string, Array<string>>;
+    private readonly wardenMapImproved: Map<WardenFile, Array<string>>;
+
+    private experimentalWardenThing;
 
     constructor (_changedFiles: Array<string>) {
-        this.changedFilesArray = _changedFiles;
-        this.buildWardenFileLocationArray();
-        this.buildWardenFileArray();
-        this.wardenMap = this.buildWardenMap();
+        this.wardenMapImproved = new Map();
+        this.locateWardenForChangeAndBuildMap(_changedFiles);
     }
-
-    private buildWardenFileLocationArray (): void {
-        for (let i = 0 ; i < this.changedFilesArray.length ; i++) {
-            const _wardenFileLocation: string = this.findWardenFileAndCheckValidity(this.changedFilesArray[i]);
-            if (_wardenFileLocation) {
-                this.wardenFileLocationArray.push(_wardenFileLocation);
-            } else {
-                continue
-            }
-        }
-    }
-
-    private buildWardenFileArray (): void {
-        if (this.wardenFileLocationArray.length) {
-            for ( let i = 0 ; i < this.wardenFileLocationArray.length ; i++ ) {
-                const wardenFile = new WardenFile(this.wardenFileLocationArray[i]);
-                this.wardenFileArray.push(wardenFile);
-            }
-        } else {
-            // Handle empty location array case
-        }
-    }
-
-    private buildWardenMap (): Map<string, Array<string>> {
-        let _wardenMap = new Map();
-      
-        for (let i = 0 ; i < this.wardenFileArray.length ; i++) {    
-            this.wardenFileArray[i].humans.humans.forEach((human) => {
-            if (_wardenMap.has(human.name)) {
-              _wardenMap.get(human.name).push(this.wardenFileArray[i].filePath);
-            } else {
-              _wardenMap.set(human.name + `   -    ` + human.email, [this.wardenFileArray[i].filePath]);
-            }
-          });
-        }
-      
-        return _wardenMap;
-    }
-
+    
     public printWardenMap (): void {
-        // let sortedMap = this.sortMapByPathsLength(_map);
-        
-        this.wardenMap.forEach((paths, name) => {
-            let formatName = cprint.toBackgroundMagenta(name.padEnd(48));
-            let formatPaths = cprint.toLightGreen(paths.join('\n    '));
+        // TODO: let sortedMap = this.sortMapByPathsLength(_map);        
+        this.wardenMapImproved.forEach((filePaths, wardenFile) => {
+
+        const names = wardenFile.humans.map(human => human.name).join(` , `);
+
+            let formatName = cprint.toBackgroundMagenta(names.padEnd(48));
+            let formatPaths = cprint.toLightGreen(filePaths.join('\n    '));
 console.log(
 `    ${formatName} 
     ${formatPaths}
 `
 );
         });
+    }
+
+    private locateWardenForChangeAndBuildMap (_changedFiles: Array<string>): void {
+        for (let i = 0 ; i < _changedFiles.length ; i++) {
+            const changedFilePath = _changedFiles[i];
+            const _wardenFileLocation: string = this.findWardenFileAndCheckValidity(changedFilePath);
+            if (!_wardenFileLocation) {
+                continue;
+            }
+            let wardenFile = this.wardenFileArray.find(warden => warden.filePath === _wardenFileLocation);
+            if (!wardenFile) {
+                wardenFile = new WardenFile(_wardenFileLocation);
+                this.wardenFileArray.push(wardenFile);
+            }
+            if (!this.wardenMapImproved.has(wardenFile)) {
+                this.wardenMapImproved.set(wardenFile, []);
+            }
+            this.wardenMapImproved.get(wardenFile).push(changedFilePath);
+        }
     }
 
     private sortMapByPathsLength (path: Array<string>): Array<string> {
@@ -88,7 +70,8 @@ console.log(
         }
     }
 
-    private findWarden (in_directory: string = './'): string | undefined {
+    private findWarden (in_directory: string = './'): string | undefined {\
+        // TODO: return a wardenFile or undefined
         let directory = path.resolve(process.cwd(), in_directory);
         let wardenFile = path.resolve(directory, '.warden');
     

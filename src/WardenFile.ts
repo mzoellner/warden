@@ -14,7 +14,7 @@ export class WardenFile {
     this.filePath = _filePath;
     const fileCheck = this.verifyAndReadWardenFile();
     if (fileCheck) {
-      this.humans = require(this.filePath);
+      this.humans = require(this.filePath).humans;
     }
   };
 
