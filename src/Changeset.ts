@@ -1,4 +1,3 @@
-const cprint = require('color-print');
 const path = require('path');
 const fs = require('fs');
 import { WardenFile } from './WardenFile';
@@ -15,29 +14,27 @@ export class Changeset {
         // The consumer shouldn't worry about anything to do with shaping the data.
 
         this.changedFilesArray = _changedFiles;
-        this.buildWardenFileLocationArray(this.changedFilesArray);
-        this.buildWardenFileArray(this.wardenFileLocationArray);
+        this.buildWardenFileLocationArray();
+        this.buildWardenFileArray();
     }
 
-    private buildWardenFileLocationArray (_changedFilesArray: Array<string>): void {
-        for (let i = 0 ; i < _changedFilesArray.length ; i++) {
-            const _wardenFileLocation: string = this.findWardenFileAndCheckValidity(_changedFilesArray[i]);
+    private buildWardenFileLocationArray (): void {
+        for (let i = 0 ; i < this.changedFilesArray.length ; i++) {
+            const _wardenFileLocation: string = this.findWardenFileAndCheckValidity(this.changedFilesArray[i]);
             if (_wardenFileLocation) {
                 this.wardenFileLocationArray.push(_wardenFileLocation);
             } else {
                 continue
             }
-            
         }
     }
 
-    private buildWardenFileArray (_wardenFileLocationArray: Array<string>): void {
+    private buildWardenFileArray (): void {
         if (this.wardenFileLocationArray.length) {
             for ( let i = 0 ; i < this.wardenFileLocationArray.length ; i++ ) {
                 const wardenFile = new WardenFile(this.wardenFileLocationArray[i]);
                 this.wardenFileArray.push(wardenFile);
             }
-            console.log(this.wardenFileArray);
         } else {
             // Handle empty location array case
         }
@@ -65,34 +62,24 @@ export class Changeset {
     //     return wardenMap;
     //   }
 
+    // private sortBychangedFilesArray (path: Array<string>): Array<string> {
+    //     const sortedchangedFilesArray = path
+    //         .sort( path => path.length )
+    //         .reverse();
+        
+    //     return sortedchangedFilesArray;
+    // }
+
     private findWardenFileAndCheckValidity (_path:string): string {
         if (_path) {
             const location = this.findWarden(_path);
             if (!location) {
-            return '';
+                return '';
             }
-            const wardenLocation = this.checkWardenFileValidity(location);
-            return wardenLocation;
+            return location;
+        } else {
+            return '';       
         }
-        return '';    
-    }
-
-    
-
-    private checkWardenFileValidity (location: string): string {
-
-        return location;     
-        // try {
-        //     const wardenLocation = location;
-        //     // if (!this.isWardenFileValid(wardenLocation)) {
-        //     //     cprint.yellow('Invalid warden file: ' + location);
-        //     //     return;
-        //     // }
-        //     return wardenLocation;
-        // } catch (e) {
-        //     console.log('error: ', e);
-        //     cprint.yellow('Could not read warden file: ' + location);
-        // }
     }
 
     private findWarden (in_directory: string = './'): string | undefined {
@@ -127,26 +114,4 @@ export class Changeset {
     
         return wardenFile;
     }
-    
-    private isWardenFileValid (wardenLocation: string): boolean {
-        console.log('wardenLocation: ', wardenLocation);
-        // if (!wardenLocation.humans || Array.isArray(wardenLocation) || (!!wardenLocation.humans && !wardenLocation.humans.length)) {
-        //     cprint.yellow('Warden file does not contain humans');
-        //     return false;
-        // }
-        // const isHumansInvalid = wardenLocation.humans.some(human => !human.name || !human.email);
-        // if (isHumansInvalid) {
-        //     cprint.yellow('Humans in warden file are not in valid format');
-        //     return false;
-        // }
-        return true;
-    }
-
-    // private sortBychangedFilesArray (path: Array<string>): Array<string> {
-    //     const sortedchangedFilesArray = path
-    //         .sort( path => path.length )
-    //         .reverse();
-        
-    //     return sortedchangedFilesArray;
-    // }
 }
