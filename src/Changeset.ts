@@ -6,18 +6,16 @@ import { WardenFile } from './WardenFile';
 export class Changeset {
     private readonly wardenFileLocationArray: Array<string> = [];
     private readonly wardenFileArray: Array<WardenFile> = [];
-    private readonly wardenMapImproved: Map<WardenFile, Array<string>>;
-
-    private experimentalWardenThing;
+    private readonly wardenMap: Map<WardenFile, Array<string>>;
 
     constructor (_changedFiles: Array<string>) {
-        this.wardenMapImproved = new Map();
+        this.wardenMap = new Map();
         this.locateWardenForChangeAndBuildMap(_changedFiles);
     }
     
     public printWardenMap (): void {
-        // TODO: let sortedMap = this.sortMapByPathsLength(_map);        
-        this.wardenMapImproved.forEach((filePaths, wardenFile) => {
+        let sortedMap = this.sortMapByPathsLength(this.wardenMap);        
+        sortedMap.forEach((filePaths, wardenFile) => {
 
         const names = wardenFile.humans.map(human => human.name).join(` , `);
 
@@ -43,19 +41,21 @@ console.log(
                 wardenFile = new WardenFile(_wardenFileLocation);
                 this.wardenFileArray.push(wardenFile);
             }
-            if (!this.wardenMapImproved.has(wardenFile)) {
-                this.wardenMapImproved.set(wardenFile, []);
+            if (!this.wardenMap.has(wardenFile)) {
+                this.wardenMap.set(wardenFile, []);
             }
-            this.wardenMapImproved.get(wardenFile).push(changedFilePath);
+            this.wardenMap.get(wardenFile).push(changedFilePath);
         }
     }
 
-    private sortMapByPathsLength (path: Array<string>): Array<string> {
-        const sortedchangedFilesArray = path
-            .sort( path => path.length )
-            .reverse();
+    private sortMapByPathsLength (_map: Map<WardenFile, Array<string>>): Map<WardenFile, Array<string>> {
+        let _sortedMap = new Map( 
+            [..._map.entries()]
+            .sort( (x, y) => x[1].length - y[1].length )
+            .reverse()
+        );
         
-        return sortedchangedFilesArray;
+        return _sortedMap;
     }
 
     private findWardenFileAndCheckValidity (_path:string): string {
@@ -70,7 +70,7 @@ console.log(
         }
     }
 
-    private findWarden (in_directory: string = './'): string | undefined {\
+    private findWarden (in_directory: string = './'): string | undefined {
         // TODO: return a wardenFile or undefined
         let directory = path.resolve(process.cwd(), in_directory);
         let wardenFile = path.resolve(directory, '.warden');
