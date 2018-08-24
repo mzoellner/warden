@@ -6,22 +6,21 @@ export type Human = {
     email: string;
 }
 
-export class WardenFile: {
+export class WardenFile {
   public readonly filePath: string = '';
   public readonly humans: Array<Human> =[];
 
   constructor (_filePath: string) {
     this.filePath = _filePath;
-    if (this.verifyAndReadWardenFile()) {
+    const fileCheck = this.verifyAndReadWardenFile();
+    if (fileCheck) {
       this.humans = require(this.filePath);
     }
   };
 
-  private verifyAndReadWardenFile (): void {
+  private verifyAndReadWardenFile (): boolean {
     const checkFile = require(this.filePath);
-    console.log(checkFile, typeof(checkFile));
-    this.checkWardenFileValidity(checkFile);
-    // this.humans = fileContents.humans;
+    return this.checkWardenFileValidity(checkFile);
   }
 
   private checkWardenFileValidity (checkFile: WardenFile): boolean {

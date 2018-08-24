@@ -1,3 +1,4 @@
+const cprint = require('color-print');
 const path = require('path');
 const fs = require('fs');
 import { WardenFile } from './WardenFile';
@@ -6,16 +7,13 @@ export class Changeset {
     private readonly changedFilesArray: Array<string>;
     private readonly wardenFileLocationArray: Array<string> = [];
     private readonly wardenFileArray: Array<WardenFile> = [];
+    private readonly wardenMap: Map<string, Array<string>>;
 
     constructor (_changedFiles: Array<string>) {
-        // In this constructor, the changedFilesArray array should be initialized and shaped.
-        // It should new up WardenFiles as needed.
-        // All of these should be private methods referenced by the constructor.
-        // The consumer shouldn't worry about anything to do with shaping the data.
-
         this.changedFilesArray = _changedFiles;
         this.buildWardenFileLocationArray();
         this.buildWardenFileArray();
+        this.wardenMap = this.buildWardenMap();
     }
 
     private buildWardenFileLocationArray (): void {
@@ -40,35 +38,43 @@ export class Changeset {
         }
     }
 
-    // private getWardenMap (_changedFilesArray:any): any {
-    //     let wardenMap = new Map();
+    private buildWardenMap (): Map<string, Array<string>> {
+        let _wardenMap = new Map();
       
-    //     for (let i=0 ; i < _changedFilesArray.length ; i++) {
-    //       let path = _changedFilesArray[i];
-    //       let wardenLocation = this.findWardenFileAndCheckValidity(path);
-    //       if (!wardenLocation) {
-    //         continue;
-    //       }
+        for (let i = 0 ; i < this.wardenFileArray.length ; i++) {    
+            this.wardenFileArray[i].humans.humans.forEach((human) => {
+            if (_wardenMap.has(human.name)) {
+              _wardenMap.get(human.name).push(this.wardenFileArray[i].filePath);
+            } else {
+              _wardenMap.set(human.name + `   -    ` + human.email, [this.wardenFileArray[i].filePath]);
+            }
+          });
+        }
       
-    //       wardenLocation.humans.forEach((human) => {
-    //         if (wardenMap.has(human.name)) {
-    //           wardenMap.get(human.name).push(path);
-    //         } else {
-    //           wardenMap.set(human.name, [path]);
-    //         }
-    //       });
-    //     }
-      
-    //     return wardenMap;
-    //   }
+        return _wardenMap;
+    }
 
-    // private sortBychangedFilesArray (path: Array<string>): Array<string> {
-    //     const sortedchangedFilesArray = path
-    //         .sort( path => path.length )
-    //         .reverse();
+    public printWardenMap (): void {
+        // let sortedMap = this.sortMapByPathsLength(_map);
         
-    //     return sortedchangedFilesArray;
-    // }
+        this.wardenMap.forEach((paths, name) => {
+            let formatName = cprint.toBackgroundMagenta(name.padEnd(48));
+            let formatPaths = cprint.toLightGreen(paths.join('\n    '));
+console.log(
+`    ${formatName} 
+    ${formatPaths}
+`
+);
+        });
+    }
+
+    private sortMapByPathsLength (path: Array<string>): Array<string> {
+        const sortedchangedFilesArray = path
+            .sort( path => path.length )
+            .reverse();
+        
+        return sortedchangedFilesArray;
+    }
 
     private findWardenFileAndCheckValidity (_path:string): string {
         if (_path) {
