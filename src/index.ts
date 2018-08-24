@@ -2,8 +2,8 @@
 
 'use strict';
 import { printWardenInfo } from './print';
-import { mapWardensForChangedAreas } from './find-warden';
 import { init } from './init';
+const path = require('path');
 
 // ******************************
 //
@@ -12,7 +12,7 @@ import { init } from './init';
 //
 // Version History:
 //
-// 1.0.3
+// 1.1.0
 // - Stable release
 //
 // ******************************
@@ -27,7 +27,7 @@ const cprint = require('color-print');
 // Constants:
 // ******************************
 
-const c_VERSION = '1.0.3';
+const c_VERSION = '1.1.0';
 
 // ******************************
 // Globals:
@@ -41,11 +41,9 @@ const g_ARGV = require('minimist')(process.argv.slice(2));
 if (g_ARGV['help']) {
     wardenHelp();
 } else if (g_ARGV['dir']) {
-    printWardenInfo(g_ARGV['dir']);
-} else if (g_ARGV['ts']) {
-    init();
+    printWardenInfo(process.cwd());
 } else {
-    mapWardensForChangedAreas();
+    init();
 }
 // ******************************
 // Functions:

@@ -1,7 +1,9 @@
-import { findWarden } from './find-warden';
-import { WardenFile } from './warden-file';
+import { WardenFile } from './WardenFile';
 const cprint = require('color-print');
 const path = require('path');
+const fs = require('fs');
+
+// TODO: Shift this out to a service..? Want to preserve the below method, and isolate from changeSet.
 
 export function printWardenInfo (in_directory: string): void {
     const wardenFile = findWarden(in_directory);
@@ -21,30 +23,6 @@ export async function printWardenFile (in_wardenFile: string, in_indent: string 
     const directory = path.dirname(in_wardenFile);
     const wardens = cprint.toGreen(wardenFileContents.humans.map(human => human.name).join('\n\t' + in_indent));
     console.log(in_indent + cprint.toGreen(directory) + ' ' + cprint.toCyan(' =>') + '\n\t' + in_indent + wardens);
-}
-
-export async function printWardenMap (_map:Map<string, Array<string>>): Promise<void> {
-    let sortedMap = sortMapByPathsLength(_map);
-    
-    sortedMap.forEach((paths, name) => {
-        let formatName = cprint.toBackgroundMagenta(name.padEnd(48));
-        let formatPaths = cprint.toLightGreen(paths.join('\n    '));
-console.log(
-`    ${formatName} 
-    ${formatPaths}
-`
-);
-    });
-}
-
-function sortMapByPathsLength (_map: Map<string, Array<string>>): Map<string, Array<string>> {
-    let _sortedMap = new Map( 
-        [..._map.entries()]
-        .sort( (x, y) => x[1].length - y[1].length )
-        .reverse()
-    );
-    
-    return _sortedMap;
 }
 
 export async function readWardenFile (in_wardenFile: string): Promise<WardenFile|undefined> {
@@ -73,4 +51,37 @@ function isWardenFileValid (wardenFileContents: WardenFile): boolean {
         return false;
     }
     return true;
+}
+
+function findWarden (in_directory: string = './'): string | false {
+    let directory = path.resolve(process.cwd(), in_directory);
+    let wardenFile = path.resolve(directory, '.warden');
+
+    const maxUpwardsIteration = 100;
+    let loopCount = 0;
+
+    while (true) {
+        if (fs.existsSync(wardenFile)) {
+            break;
+        }
+
+        const oldDirectory = directory;
+        directory = path.dirname(directory);
+        if (directory === oldDirectory) {
+            break;
+        }
+
+        if (loopCount++ > maxUpwardsIteration) {
+            cprint.yellow('Too many loop iterations! Invalid top directory: ' + directory);
+            break;
+        }
+
+        wardenFile = path.resolve(directory, '.warden');
+    }
+
+    if (! fs.existsSync(wardenFile)) {
+        return false;
+    }
+
+    return wardenFile;
 }

@@ -12,14 +12,14 @@ export class WardenFile {
 
   constructor (_filePath: string) {
     this.filePath = _filePath;
-    const fileCheck = this.verifyAndReadWardenFile();
+    const checkFile = require(this.filePath);
+    const fileCheck = this.verifyAndReadWardenFile(checkFile);
     if (fileCheck) {
-      this.humans = require(this.filePath).humans;
+      this.humans = checkFile.humans;
     }
   };
 
-  private verifyAndReadWardenFile (): boolean {
-    const checkFile = require(this.filePath);
+  private verifyAndReadWardenFile (checkFile): boolean {
     return this.checkWardenFileValidity(checkFile);
   }
 
