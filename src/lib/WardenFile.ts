@@ -19,7 +19,7 @@ export class WardenFile {
     }
   };
 
-  private verifyAndReadWardenFile (checkFile): boolean {
+  private verifyAndReadWardenFile (checkFile: WardenFile): boolean {
     return this.checkWardenFileValidity(checkFile);
   }
 
