@@ -2,7 +2,7 @@
 
 'use strict';
 import { printWardenInfo } from './print';
-import { init } from './init';
+import { printWardensForBranch } from './commands/print-wardens-for-branch';
 const path = require('path');
 
 // ******************************
@@ -41,9 +41,10 @@ const g_ARGV = require('minimist')(process.argv.slice(2));
 if (g_ARGV['help']) {
     wardenHelp();
 } else if (g_ARGV['dir']) {
+    console.log(__dirname);
     printWardenInfo(process.cwd());
 } else {
-    init();
+    printWardensForBranch();
 }
 // ******************************
 // Functions:
