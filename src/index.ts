@@ -1,18 +1,21 @@
 #!/usr/bin/env node
 
 'use strict';
-import { printWardenInfo } from './print';
+import { printWardenInfo } from './lib/print';
 import { printWardensForBranch } from './commands/print-wardens-for-branch';
 const path = require('path');
 
 // ******************************
 //
 //
-// WARDEN v1.0.3
+// WARDEN v1.1.0
 //
 // Version History:
 //
 // 1.1.0
+// - Refactor to Changeset and Wardenfile class, restructure files
+//
+// 1.0.3
 // - Stable release
 //
 // ******************************
