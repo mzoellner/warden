@@ -5,31 +5,15 @@ import { WardenFile } from './WardenFile';
 import { findWarden } from './PrintService';
 
 export class Changeset {
+    public readonly wardenMap: Map<WardenFile, Array<string>>;
     private readonly wardenFileLocationArray: Array<string> = [];
     private readonly wardenFileArray: Array<WardenFile> = [];
-    private readonly wardenMap: Map<WardenFile, Array<string>>;
 
     constructor (
         _changedFiles: Array<string>,
     ) {
         this.wardenMap = new Map();
         this.locateWardenForChangeAndBuildMap(_changedFiles);
-    }
-    
-    public printWardenMap (): void {
-        let sortedMap = this.sortMapByPathsLength(this.wardenMap);        
-        sortedMap.forEach((filePaths, wardenFile) => {
-
-        const names = wardenFile.humans.map(human => human.name).join(` , `);
-
-            let formatName = cprint.toBackgroundMagenta(names.padEnd(48));
-            let formatPaths = cprint.toLightGreen(filePaths.join('\n    '));
-console.log(
-`    ${formatName} 
-    ${formatPaths}
-`
-);
-        });
     }
 
     private locateWardenForChangeAndBuildMap (_changedFiles: Array<string>): void {
@@ -49,16 +33,6 @@ console.log(
             }
             this.wardenMap.get(wardenFile).push(changedFilePath);
         }
-    }
-
-    private sortMapByPathsLength (_map: Map<WardenFile, Array<string>>): Map<WardenFile, Array<string>> {
-        let _sortedMap = new Map( 
-            [..._map.entries()]
-            .sort( (x, y) => x[1].length - y[1].length )
-            .reverse()
-        );
-        
-        return _sortedMap;
     }
 
     private findWardenFileAndCheckValidity (_path:string): string {

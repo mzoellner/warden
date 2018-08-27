@@ -1,7 +1,33 @@
-import WardenFile from './WardenFile';
+import { WardenFile } from './WardenFile';
 const cprint = require('color-print');
 const path = require('path');
 const fs = require('fs');
+
+export function printWardenMap (wardenMap: Map<WardenFile, Array<string>>): void {
+    let sortedMap = sortMapByPathsLength(wardenMap);        
+    sortedMap.forEach((filePaths, wardenFile) => {
+
+    const names = wardenFile.humans.map(human => human.name).join(` , `);
+
+        let formatName = cprint.toBackgroundMagenta(names.padEnd(48));
+        let formatPaths = cprint.toLightGreen(filePaths.join('\n    '));
+console.log(
+`    ${formatName} 
+    ${formatPaths}
+`
+);
+    });
+}
+
+function sortMapByPathsLength (_map: Map<WardenFile, Array<string>>): Map<WardenFile, Array<string>> {
+    let _sortedMap = new Map( 
+        [..._map.entries()]
+        .sort( (x, y) => x[1].length - y[1].length )
+        .reverse()
+    );
+    
+    return _sortedMap;
+}
 
 export function printWardenFile (in_wardenFile: string, in_indent: string = '') {
     const wardenFileContents = readWardenFile(in_wardenFile);

@@ -1,11 +1,13 @@
+import { printWardenMap } from '../lib/PrintService';
+import { Changeset } from '../lib/Changeset';
+import { WardenFile } from '../lib/WardenFile';
 const path = require('path');
 const modifiled = require('modifiled');
-import { Changeset } from '../lib/Changeset';
 
 export function printWardensForBranch () {
     const _changedFiles: Array<string> = modifiled.default(process.cwd(), {vcs:1});
 
     const _changeSet = new Changeset(_changedFiles);
 
-    const print = _changeSet.printWardenMap();
+    const print = printWardenMap(_changeSet.wardenMap);
 }
