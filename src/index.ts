@@ -58,7 +58,7 @@ function wardenHelp () {
     cprint.white('');
     cprint.yellow('Version ' + c_VERSION);
     cprint.white('');
-    cprint.white('yarn warden\tPrint warden file info for whole branch against default');
+    cprint.white('warden\t\tPrint warden file info for whole branch against default');
     cprint.white('');
     cprint.green('Options:');
     cprint.white('--help\t\tShow this menu');

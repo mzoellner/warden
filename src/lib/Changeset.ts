@@ -10,7 +10,7 @@ export class Changeset {
     private readonly wardenFileArray: Array<WardenFile> = [];
 
     constructor (
-        _changedFiles: Array<string>,
+        _changedFiles: Array<string>
     ) {
         this.wardenMap = new Map();
         this.locateWardenForChangeAndBuildMap(_changedFiles);
