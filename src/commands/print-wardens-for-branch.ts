@@ -1,6 +1,5 @@
 import { printWardenMap } from '../lib/PrintService';
 import { Changeset } from '../lib/Changeset';
-import { WardenFile } from '../lib/WardenFile';
 const path = require('path');
 const modifiled = require('modifiled');
 
