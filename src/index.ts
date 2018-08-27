@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 'use strict';
-import { printWardenInfo } from './lib/print';
+import { printWardenInfo } from './lib/PrintService';
 import { printWardensForBranch } from './commands/print-wardens-for-branch';
 const path = require('path');
 
@@ -58,6 +58,9 @@ function wardenHelp () {
     cprint.white('');
     cprint.yellow('Version ' + c_VERSION);
     cprint.white('');
+    cprint.white('yarn warden\tPrint warden file info for whole branch against default');
+    cprint.white('');
     cprint.green('Options:');
     cprint.white('--help\t\tShow this menu');
+    cprint.white('--dir\t\tPrint warden file for current directory');
 }

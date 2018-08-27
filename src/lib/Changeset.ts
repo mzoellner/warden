@@ -2,13 +2,16 @@ const cprint = require('color-print');
 const path = require('path');
 const fs = require('fs');
 import { WardenFile } from './WardenFile';
+import { findWarden } from './PrintService';
 
 export class Changeset {
     private readonly wardenFileLocationArray: Array<string> = [];
     private readonly wardenFileArray: Array<WardenFile> = [];
     private readonly wardenMap: Map<WardenFile, Array<string>>;
 
-    constructor (_changedFiles: Array<string>) {
+    constructor (
+        _changedFiles: Array<string>,
+    ) {
         this.wardenMap = new Map();
         this.locateWardenForChangeAndBuildMap(_changedFiles);
     }
@@ -60,7 +63,7 @@ console.log(
 
     private findWardenFileAndCheckValidity (_path:string): string {
         if (_path) {
-            const location = this.findWarden(_path);
+            const location = findWarden(_path);
             if (!location) {
                 return '';
             }
@@ -68,39 +71,5 @@ console.log(
         } else {
             return '';       
         }
-    }
-
-    private findWarden (in_directory: string = './'): string | undefined {
-        // TODO: return a wardenFile or undefined
-        let directory = path.resolve(process.cwd(), in_directory);
-        let wardenFile = path.resolve(directory, '.warden');
-    
-        const maxUpwardsIteration = 100;
-        let loopCount = 0;
-    
-        while (true) {
-            if (fs.existsSync(wardenFile)) {
-                break;
-            }
-    
-            const oldDirectory = directory;
-            directory = path.dirname(directory);
-            if (directory === oldDirectory) {
-                break;
-            }
-    
-            if (loopCount++ > maxUpwardsIteration) {
-                cprint.yellow('Too many loop iterations! Invalid top directory: ' + directory); // throw
-                break;
-            }
-    
-            wardenFile = path.resolve(directory, '.warden');
-        }
-    
-        if (!fs.existsSync(wardenFile)) {
-            return undefined;
-        }
-    
-        return wardenFile;
     }
 }

@@ -1,9 +1,7 @@
-import { WardenFile } from './WardenFile';
+import WardenFile from './WardenFile';
 const cprint = require('color-print');
 const path = require('path');
 const fs = require('fs');
-
-// TODO: Shift this out to a service..? Want to preserve the below method, and isolate from changeSet.
 
 export function printWardenInfo (in_directory: string): void {
     const wardenFile = findWarden(in_directory);
@@ -15,8 +13,8 @@ export function printWardenInfo (in_directory: string): void {
     }
 }
 
-export async function printWardenFile (in_wardenFile: string, in_indent: string = '') {
-    const wardenFileContents = await readWardenFile(in_wardenFile);
+export function printWardenFile (in_wardenFile: string, in_indent: string = '') {
+    const wardenFileContents = readWardenFile(in_wardenFile);
     if (!wardenFileContents) {
         return;
     }
@@ -25,7 +23,7 @@ export async function printWardenFile (in_wardenFile: string, in_indent: string 
     console.log(in_indent + cprint.toGreen(directory) + ' ' + cprint.toCyan(' =>') + '\n\t' + in_indent + wardens);
 }
 
-export async function readWardenFile (in_wardenFile: string): Promise<WardenFile|undefined> {
+export function readWardenFile (in_wardenFile: string): Promise<WardenFile|undefined> {
     try {
         const wardenFileContents = require(in_wardenFile);
         if (!isWardenFileValid(wardenFileContents)) {
@@ -38,7 +36,7 @@ export async function readWardenFile (in_wardenFile: string): Promise<WardenFile
     }
 }
 
-function isWardenFileValid (wardenFileContents: WardenFile): boolean {
+export function isWardenFileValid (wardenFileContents: WardenFile): boolean {
     if (!wardenFileContents.humans ||
         Array.isArray(wardenFileContents) ||
         (!!wardenFileContents.humans && !wardenFileContents.humans.length)) {
@@ -53,7 +51,7 @@ function isWardenFileValid (wardenFileContents: WardenFile): boolean {
     return true;
 }
 
-function findWarden (in_directory: string = './'): string | false {
+export function findWarden (in_directory: string = './'): string | false {
     let directory = path.resolve(process.cwd(), in_directory);
     let wardenFile = path.resolve(directory, '.warden');
 
