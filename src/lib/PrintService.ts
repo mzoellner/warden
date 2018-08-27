@@ -3,16 +3,6 @@ const cprint = require('color-print');
 const path = require('path');
 const fs = require('fs');
 
-export function printWardenInfo (in_directory: string): void {
-    const wardenFile = findWarden(in_directory);
-
-    if (wardenFile) {
-        printWardenFile(wardenFile);
-    } else {
-        cprint.yellow('No warden for this area...');
-    }
-}
-
 export function printWardenFile (in_wardenFile: string, in_indent: string = '') {
     const wardenFileContents = readWardenFile(in_wardenFile);
     if (!wardenFileContents) {

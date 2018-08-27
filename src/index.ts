@@ -3,6 +3,7 @@
 'use strict';
 import { printWardenInfo } from './lib/PrintService';
 import { printWardensForBranch } from './commands/print-wardens-for-branch';
+import { printWardenForDirectory } from './commands/print-wardens-for-dir';
 const path = require('path');
 
 // ******************************
@@ -45,7 +46,7 @@ if (g_ARGV['help']) {
     wardenHelp();
 } else if (g_ARGV['dir']) {
     console.log(__dirname);
-    printWardenInfo(process.cwd());
+    printWardenForDirectory(process.cwd());
 } else {
     printWardensForBranch();
 }
