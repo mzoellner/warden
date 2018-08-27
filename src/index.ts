@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 'use strict';
-import { printWardenInfo } from './lib/PrintService';
 import { printWardensForBranch } from './commands/print-wardens-for-branch';
 import { printWardenForDirectory } from './commands/print-wardens-for-dir';
 const path = require('path');

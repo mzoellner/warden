@@ -6,7 +6,7 @@ export type Human = {
     email: string;
 }
 
-export class WardenFile {
+export default class WardenFile {
   public readonly filePath: string = '';
   public readonly humans: Array<Human> =[];
 

@@ -13,14 +13,14 @@ export function printWardenFile (in_wardenFile: string, in_indent: string = '') 
     console.log(in_indent + cprint.toGreen(directory) + ' ' + cprint.toCyan(' =>') + '\n\t' + in_indent + wardens);
 }
 
-export function readWardenFile (in_wardenFile: string): Promise<WardenFile|undefined> {
+export function readWardenFile (in_wardenFile: string): WardenFile|undefined {
     try {
         const wardenFileContents = require(in_wardenFile);
         if (!isWardenFileValid(wardenFileContents)) {
             cprint.yellow('Invalid warden file: ' + in_wardenFile);
             return;
         }
-        return Promise.resolve(wardenFileContents);
+        return wardenFileContents;
     } catch (e) {
         cprint.yellow('Could not read warden file: ' + in_wardenFile);
     }
