@@ -3,6 +3,7 @@ import { findWarden } from '../lib/PrintService';
 import { printWardenFile } from '../lib/PrintService';
 
 export function printWardenForDirectory (in_directory: string): void {
+    console.log(in_directory);
     const wardenFile = findWarden(in_directory);
 
     if (wardenFile) {

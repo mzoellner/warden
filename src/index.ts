@@ -7,7 +7,6 @@ const path = require('path');
 
 // ******************************
 //
-//
 // WARDEN v1.1.0
 //
 // Version History:
@@ -24,43 +23,32 @@ const path = require('path');
 // Utilities:
 // ******************************
 
-const cprint = require('color-print');
+const program = require('commander');
 
 // ******************************
 // Constants:
 // ******************************
 
 const c_VERSION = '1.1.0';
+const wardenDescription = 
+`-----------------------------
 
-// ******************************
-// Globals:
-// ******************************
+  Respository management tool.
 
-const g_ARGV = require('minimist')(process.argv.slice(2));
+  Run without options to print warden information for all your current changes against default.
+
+  -----------------------------`;
 
 // ******************************
 // Script:
 // ******************************
-if (g_ARGV['help']) {
-    wardenHelp();
-} else if (g_ARGV['dir']) {
-    console.log(__dirname);
-    printWardenForDirectory(process.cwd());
-} else {
-    printWardensForBranch();
-}
-// ******************************
-// Functions:
-// ******************************
 
-function wardenHelp () {
-    cprint.rainbow('Warden Help');
-    cprint.white('');
-    cprint.yellow('Version ' + c_VERSION);
-    cprint.white('');
-    cprint.white('warden\t\tPrint warden file info for whole branch against default');
-    cprint.white('');
-    cprint.green('Options:');
-    cprint.white('--help\t\tShow this menu');
-    cprint.white('--dir\t\tPrint warden file for current directory');
-}
+program
+  .version(c_VERSION)
+  .name('warden')
+  .description(wardenDescription)
+  .option('-d, --dir', 'print warden files for current directory')
+  .parse(process.argv);
+ 
+if (program.dir) printWardenForDirectory(process.cwd());
+else printWardensForBranch();
