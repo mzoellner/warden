@@ -10,16 +10,16 @@ export class Changeset {
     private readonly wardenFileArray: Array<WardenFile> = [];
 
     constructor (
-        _changedFiles: Array<string>
+        _changedFilePaths: Array<string>
     ) {
         this.wardenMap = new Map();
-        this.locateWardenForChangeAndBuildMap(_changedFiles);
+        this.locateWardenForChangeAndBuildMap(_changedFilePaths);
     }
 
-    private locateWardenForChangeAndBuildMap (_changedFiles: Array<string>): void {
-        for (let i = 0 ; i < _changedFiles.length ; i++) {
-            const changedFilePath = _changedFiles[i];
-            const _wardenFileLocation: string = this.findWardenFileAndCheckValidity(changedFilePath);
+    private locateWardenForChangeAndBuildMap (_changedFilePaths: Array<string>): void {
+        for (let i = 0 ; i < _changedFilePaths.length ; i++) {
+            const changedFilePath = _changedFilePaths[i];
+            const _wardenFileLocation: string = this.findWardenFilePath(changedFilePath);
             if (!_wardenFileLocation) {
                 continue;
             }
@@ -35,15 +35,14 @@ export class Changeset {
         }
     }
 
-    private findWardenFileAndCheckValidity (_path:string): string {
-        if (_path) {
-            const location = findWarden(_path);
-            if (!location) {
-                return '';
-            }
-            return location;
-        } else {
-            return '';       
+    private findWardenFilePath (_path:string): string {
+        if (!_path) {
+            return '';    
         }
+        const location = findWarden(_path);
+        if (!location) {
+            return '';
+        }
+        return location;
     }
 }
