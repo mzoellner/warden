@@ -22,7 +22,13 @@ $ npx repository-warden
 Repository-warden takes a few commands,
 
 ```sh
-$ warden help
+$ warden -V, --version
+```
+
+Will print the version number.
+
+```sh
+$ warden -h, --help
 ```
 
 Will print a simple 'help' message with a summary of commands.
