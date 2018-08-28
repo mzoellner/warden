@@ -1,4 +1,3 @@
-import { WardenFile } from './WardenFile';
 const cprint = require('color-print');
 const path = require('path');
 const fs = require('fs');
