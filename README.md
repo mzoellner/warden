@@ -14,21 +14,21 @@ Warden requires [Node.js](https://nodejs.org/) v4+ to run.
 Then:
 
 ```sh
-$ npm install --global repository-warden
+$ npx repository-warden
 ```
 
 ### Usage
 
-Once the package is globally installed,
+Repository-warden takes a few commands,
 
 ```sh
-$ warden --help
+$ warden help
 ```
 
 Will print a simple 'help' message with a summary of commands.
 
 ```sh
-$ warden --dir
+$ warden dir
 ```
 
 Will print warden file information for the current directory within the project.
@@ -37,7 +37,7 @@ Will print warden file information for the current directory within the project.
 $ warden
 ```
 
-Will print warden file information for every change on your branch against `default`.
+Without commands, will print warden file information for every change on your branch against `default`.
 
 ### Development
 
