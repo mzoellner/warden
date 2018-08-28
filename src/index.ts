@@ -35,9 +35,9 @@ program
   .description(wardenDescription)
 
 program
-    .command(`dir`)
-    .description(`print warden files for current directory`)
-    .action(() => printWardenForDirectory(process.cwd()));
+    .command(`dir <searchDir>`)
+    .description(`print warden files for given directory`)
+    .action((searchDir: string) => printWardenForDirectory(searchDir));
 
 program
   .parse(process.argv);

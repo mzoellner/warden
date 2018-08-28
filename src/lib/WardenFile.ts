@@ -12,10 +12,11 @@ export class WardenFile {
 
   constructor (_filePath: string) {
     this.filePath = _filePath;
-    const wardenFileData = require(this.filePath);
-    const isValid = this.checkWardenFileValidity(wardenFileData);
+
+    const isValid = this.checkWardenFileValidity(_filePath); // <------ Trying to get this done before the require...
     if (isValid) {
-      this.humans = wardenFileData.humans;
+        const wardenFileData = require(_filePath);
+        this.humans = wardenFileData.humans;
     }
   };
 
@@ -27,15 +28,16 @@ export class WardenFile {
     console.log(in_indent + cprint.toGreen(this.filePath) + ' ' + cprint.toCyan(' =>') + '\n\t' + in_indent + wardens);
 }
 
-  private checkWardenFileValidity (wardenFileData: WardenFile): boolean {
+  private checkWardenFileValidity (_filePath: string): boolean {
     try {
+        const wardenFileData = require(_filePath);
         if (!this.isWardenFileValid(wardenFileData)) {
-            cprint.yellow('Invalid warden file: ' + this.filePath);
+            cprint.yellow('Invalid warden file: ' + _filePath);
             return false;
         }
         return true;
     } catch (e) {
-        cprint.yellow('Could not read warden file: ' + this.filePath);
+        cprint.yellow('Could not read warden file: ' + _filePath);
         return false;
     }
   }

@@ -4,13 +4,13 @@ const fs = require('fs');
 
 export function findWarden (in_directory: string = './'): string | false {
     let directory = path.resolve(process.cwd(), in_directory);
-    let wardenFile = path.resolve(directory, '.warden');
+    let wardenFilePath = path.resolve(directory, '.warden');
 
     const maxUpwardsIteration = 100;
     let loopCount = 0;
 
     while (true) {
-        if (fs.existsSync(wardenFile)) {
+        if (fs.existsSync(wardenFilePath)) {
             break;
         }
 
@@ -25,12 +25,12 @@ export function findWarden (in_directory: string = './'): string | false {
             break;
         }
 
-        wardenFile = path.resolve(directory, '.warden');
+        wardenFilePath = path.resolve(directory, '.warden');
     }
 
-    if (! fs.existsSync(wardenFile)) {
+    if (! fs.existsSync(wardenFilePath)) {
         return false;
     }
 
-    return wardenFile;
+    return wardenFilePath;
 }

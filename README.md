@@ -28,10 +28,11 @@ $ warden help
 Will print a simple 'help' message with a summary of commands.
 
 ```sh
-$ warden dir
+$ warden dir <file path>
 ```
 
-Will print warden file information for the current directory within the project.
+Will print warden file information for the given directory within the project. If no path is given,
+defaults to current working directory.
 
 ```sh
 $ warden
