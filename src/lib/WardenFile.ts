@@ -19,6 +19,14 @@ export class WardenFile {
     }
   };
 
+  public printWardenFile (in_indent: string = '') {
+    if (!this.humans) {
+        return;
+    }
+    const wardens = cprint.toGreen(this.humans.map(human => human.name).join('\n\t' + in_indent));
+    console.log(in_indent + cprint.toGreen(this.filePath) + ' ' + cprint.toCyan(' =>') + '\n\t' + in_indent + wardens);
+}
+
   private checkWardenFileValidity (wardenFileData: WardenFile): boolean {
     try {
         if (!this.isWardenFileValid(wardenFileData)) {
