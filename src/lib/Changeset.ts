@@ -56,9 +56,9 @@ export class Changeset {
             if (!this.wardenMap.has(wardenFile)) {
                 this.wardenMap.set(wardenFile, []);
             }
-            const file = this.wardenMap.get(wardenFile);
-            if (file) {
-                file.push(changedFilePath);
+            const fileKey = this.wardenMap.get(wardenFile);
+            if (fileKey) {
+                fileKey.push(changedFilePath);
             }
         }
     }
