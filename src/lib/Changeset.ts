@@ -5,7 +5,7 @@ import { WardenFile } from './WardenFile';
 import { findWarden } from './findWarden';
 
 export class Changeset {
-    public readonly wardenMap: Map<WardenFile, Array<string>>;
+    private readonly wardenMap: Map<WardenFile, Array<string>>;
     private readonly wardenFileLocationArray: Array<string> = [];
     private readonly wardenFileArray: Array<WardenFile> = [];
 
@@ -16,7 +16,7 @@ export class Changeset {
         this.locateWardenForChangeAndBuildMap(_changedFilePaths);
     }
 
-    public printWardenMap (): void {
+    public print (): void {
         let sortedMap = this.sortMapByPathsLength(this.wardenMap);        
         sortedMap.forEach((filePaths, wardenFile) => {
             const names = wardenFile.humans.map(human => human.name).join(` , `);
@@ -43,7 +43,10 @@ export class Changeset {
     private locateWardenForChangeAndBuildMap (_changedFilePaths: Array<string>): void {
         for (let i = 0 ; i < _changedFilePaths.length ; i++) {
             const changedFilePath = _changedFilePaths[i];
-            const _wardenFileLocation: string = this.findWardenFilePath(changedFilePath);
+            if (!changedFilePath) {
+                continue;
+            }
+            const _wardenFileLocation: string | false = findWarden(changedFilePath);
             if (!_wardenFileLocation) {
                 continue;
             }
@@ -57,16 +60,5 @@ export class Changeset {
             }
             this.wardenMap.get(wardenFile).push(changedFilePath);
         }
-    }
-
-    private findWardenFilePath (_path:string): string {
-        if (!_path) {
-            return '';    
-        }
-        const location = findWarden(_path);
-        if (!location) {
-            return '';
-        }
-        return location;
     }
 }

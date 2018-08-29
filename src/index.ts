@@ -16,7 +16,7 @@ const program = require('commander');
 // Constants:
 // ******************************
 
-const wardenDescription = 
+const wardenDescription =
 `-----------------------------
 
   Respository management tool.
@@ -30,17 +30,22 @@ const wardenDescription =
 // ******************************
 
 program
-  .version(packageJSON.version)
-  .name('warden')
-  .description(wardenDescription)
+    .version(packageJSON.version)
+    .name('warden')
+    .description(wardenDescription)
 
 program
-    .command(`dir <searchDir>`)
-    .description(`print warden files for given directory`)
+    .command(`branch`)
+    .description('Print warden files for all changes on current branch <default> ')
+    .action(() => printWardensForBranch());
+
+program
+    .command(`dir [searchDir]`)
+    .description(`Print warden files for given directory`)
     .action((searchDir: string) => printWardenForDirectory(searchDir));
 
 program
-  .parse(process.argv);
+    .parse(process.argv);
 
 if (!process.argv.slice(2).length) {
     // default command when running cli without any extra args
