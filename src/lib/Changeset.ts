@@ -31,7 +31,7 @@ export class Changeset {
     private sortMapByPathsLength (_map: Map<WardenFile, Array<string>>): Map<WardenFile, Array<string>> {
         let _sortedMap = new Map( 
             [..._map.entries()]
-            .sort( (x, y) => x[1].length - y[1].length )
+            .sort( (x, y) => x[1].length - y[1].length ) // path array is the second property of a given entry
             .reverse()
         );
         
