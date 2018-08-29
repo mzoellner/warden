@@ -1,6 +1,4 @@
 const cprint = require('color-print');
-const path = require('path');
-const fs = require('fs');
 import { WardenFile } from './WardenFile';
 import { findWarden } from './findWarden';
 

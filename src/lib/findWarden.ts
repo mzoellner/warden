@@ -21,8 +21,7 @@ export function findWarden (in_directory: string = './'): string | false {
         }
 
         if (loopCount++ > maxUpwardsIteration) {
-            cprint.yellow('Too many loop iterations! Invalid top directory: ' + directory);
-            break;
+            throw new Error('Too many loop iterations! Invalid top directory: ' + directory);
         }
 
         wardenFilePath = path.resolve(directory, '.warden');
