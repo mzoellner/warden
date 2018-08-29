@@ -1,58 +1,53 @@
 #!/usr/bin/env node
 
 'use strict';
-import { printWardenInfo } from './print';
-import { mapWardensForChangedAreas } from './find-warden';
-
-// ******************************
-//
-//
-// WARDEN v1.0.3
-//
-// Version History:
-//
-// 1.0.3
-// - Stable release
-//
-// ******************************
+import { printWardensForBranch } from './commands/print-wardens-for-branch';
+import { printWardenForDirectory } from './commands/print-wardens-for-dir';
+const path = require('path');
+const packageJSON = require('../package.json');
 
 // ******************************
 // Utilities:
 // ******************************
 
-const cprint = require('color-print');
+const program = require('commander');
 
 // ******************************
 // Constants:
 // ******************************
 
-const c_VERSION = '1.0.3';
+const wardenDescription =
+`-----------------------------
 
-// ******************************
-// Globals:
-// ******************************
+  Respository management tool.
 
-const g_ARGV = require('minimist')(process.argv.slice(2));
+  Run without commands to print warden information for all your current changes against default.
+
+  -----------------------------`;
 
 // ******************************
 // Script:
 // ******************************
-if (g_ARGV['help']) {
-    wardenHelp();
-} else if (g_ARGV['dir']) {
-    printWardenInfo(g_ARGV['dir']);
-} else {
-    mapWardensForChangedAreas();
-}
-// ******************************
-// Functions:
-// ******************************
 
-function wardenHelp () {
-    cprint.rainbow('Warden Help');
-    cprint.white('');
-    cprint.yellow('Version ' + c_VERSION);
-    cprint.white('');
-    cprint.green('Options:');
-    cprint.white('--help\t\tShow this menu');
+program
+    .version(packageJSON.version)
+    .name('warden')
+    .description(wardenDescription)
+
+program
+    .command(`branch`)
+    .description('Print warden files for all changes on current branch <default> ')
+    .action(() => printWardensForBranch());
+
+program
+    .command(`dir [searchDir]`)
+    .description(`Print warden files for given directory`)
+    .action((searchDir: string) => printWardenForDirectory(searchDir));
+
+program
+    .parse(process.argv);
+
+if (!process.argv.slice(2).length) {
+    // default command when running cli without any extra args
+    printWardensForBranch();
 }

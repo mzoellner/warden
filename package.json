@@ -1,6 +1,6 @@
 {
   "name": "repository-warden",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "description": "Print out warden information in your repository",
   "bin": {
     "warden": "./dist/index.js"
@@ -18,12 +18,14 @@
   "homepage": "https://github.com/JorisCoppieters/warden#readme",
   "dependencies": {
     "color-print": "^1.0.1",
+    "commander": "^2.17.1",
     "fs-process": "^1.0.0",
     "jest-changed-files": "^23.0.1",
     "minimist": "^1.2.0",
     "modifiled": "^0.0.6"
   },
   "devDependencies": {
+    "@types/commander": "^2.12.2",
     "@types/node": "^10.0.3",
     "ts-node-dev": "^1.0.0-pre.21",
     "typescript": "^2.8.3"
