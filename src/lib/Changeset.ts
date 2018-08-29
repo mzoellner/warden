@@ -31,7 +31,7 @@ export class Changeset {
     private sortMapByPathsLength (_map: Map<WardenFile, Array<string>>): Map<WardenFile, Array<string>> {
         let _sortedMap = new Map( 
             [..._map.entries()]
-            .sort( (x, y) => x[1].length - y[1].length ) // path array is the second property of a given entry
+            .sort( (x, y) => x[1].length - y[1].length ) // path is the second property of a given entry
             .reverse()
         );
         
@@ -56,7 +56,10 @@ export class Changeset {
             if (!this.wardenMap.has(wardenFile)) {
                 this.wardenMap.set(wardenFile, []);
             }
-            this.wardenMap.get(wardenFile).push(changedFilePath);
+            const file = this.wardenMap.get(wardenFile);
+            if (file) {
+                file.push(changedFilePath);
+            }
         }
     }
 }
