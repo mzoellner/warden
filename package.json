@@ -1,6 +1,6 @@
 {
   "name": "repository-warden",
-  "version": "3.1.0",
+  "version": "3.2.0",
   "description": "Print out warden information in your repository",
   "bin": {
     "warden": "./dist/index.js"
