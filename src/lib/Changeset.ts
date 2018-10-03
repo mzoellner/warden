@@ -3,9 +3,8 @@ import { WardenFile } from './WardenFile';
 import { findWarden } from './findWarden';
 
 export class Changeset {
-    private readonly wardenMap: Map<WardenFile, Array<string>>;
-    private readonly wardenFileLocationArray: Array<string> = [];
-    private readonly wardenFileArray: Array<WardenFile> = [];
+    public readonly wardenMap: Map<WardenFile, Array<string>>;
+    public readonly wardenFileArray: Array<WardenFile> = [];
 
     constructor (
         _changedFilePaths: Array<string>
