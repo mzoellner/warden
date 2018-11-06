@@ -26,14 +26,32 @@
   },
   "devDependencies": {
     "@types/commander": "^2.12.2",
+    "@types/jest": "^23.3.2",
     "@types/node": "^10.0.3",
+    "jest": "^23.6.0",
+    "ts-jest": "^23.1.4",
     "ts-node-dev": "^1.0.0-pre.21",
     "typescript": "^2.8.3"
   },
   "scripts": {
     "build": "tsc",
+    "test": "jest",
     "start": "ts-node-dev --respawn ./src/index.ts",
     "watch": "tsc --watch",
     "prepublish": "tsc"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
   }
 }

@@ -1,0 +1,5 @@
+module.exports = {
+  humans: [
+      {name: 'Kevin', email: 'kevin@trademe.co.nz'}
+  ]
+}
