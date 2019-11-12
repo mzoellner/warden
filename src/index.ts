@@ -3,6 +3,7 @@
 'use strict';
 import { printWardensForBranch } from './commands/print-wardens-for-branch';
 import { printWardenForDirectory } from './commands/print-wardens-for-dir';
+import { retireWarden } from './commands/retire-warden';
 const path = require('path');
 const packageJSON = require('../package.json');
 
@@ -43,6 +44,11 @@ program
     .command(`dir [searchDir]`)
     .description(`Print warden files for given directory`)
     .action((searchDir: string) => printWardenForDirectory(searchDir));
+
+program
+    .command('retire [person]')
+    .description('Retire a warden')
+    .action(async (person: string) => await retireWarden(person));
 
 program
     .parse(process.argv);
