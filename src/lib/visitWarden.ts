@@ -64,7 +64,7 @@ async function visitWardenFile(
             await action(wardenFile);
         }
 
-        return wardenFilePath;
+        return wardenFile;
     }
 
     return undefined;
