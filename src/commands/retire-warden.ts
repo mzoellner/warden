@@ -3,8 +3,9 @@ import { visitWardenFiles } from '../lib/visitWarden';
 import { WardenFile, Human } from '../lib/WardenFile';
 const inquirer = require('inquirer');
 
-export async function retireWarden(person: string) {
-    cprint.yellow(`retiring ${person}`);
+export async function retireWarden(person: string): Promise<void> {
+    cprint.yellow(`Retiring ${person}...`);
+    cprint.yellow();
 
     const currentDirectory = process.cwd();
 
@@ -14,6 +15,7 @@ export async function retireWarden(person: string) {
     for (let wardenFile of wardenFiles) {
         await retirePerson(person, wardenFile);
         cprint.green(wardenFile.filePath);
+        wardenFile.saveToDisk();
     }
 };
 
@@ -49,7 +51,9 @@ async function selectHuman(matchingHumans: Human[], wardenFile: WardenFile): Pro
 
 async function retireHuman(human: Human, wardenFile: WardenFile): Promise<void> {
     if (wardenFile.humans.length > 1) {
-        const answer = await promptForRemovalOfHuman(human, wardenFile);        
+        const remainingHumans = getRemainingHumans(human, wardenFile);
+
+        const answer = await promptForRemovalOfHuman(human, remainingHumans, wardenFile);        
 
         if (answer.confirm === 'y') {
             cprint.red(`Removing ${human.name} from list`);
@@ -65,8 +69,18 @@ async function retireHuman(human: Human, wardenFile: WardenFile): Promise<void> 
     }
 }
 
-async function promptForRemovalOfHuman(human: Human, wardenFile: WardenFile): Promise<any> {
-    cprint.yellow(`Removing ${human.name} from ${wardenFile.filePath} as there are still ${wardenFile.humans.length - 1} wardens left`);
+function getRemainingHumans (human: Human, wardenFile: WardenFile): Human[] {
+    return wardenFile.humans.filter(h => h !== human);
+}
+
+async function promptForRemovalOfHuman(human: Human, remainingHumans: Human[], wardenFile: WardenFile): Promise<any> {
+    const remainingHumansString = remainingHumans.map(h => h.name).join(',');
+    
+    cprint.yellow(`Suggesting to remove ${human.name} ` + 
+                  `from ${wardenFile.filePath} as there ` + 
+                  `is/are still ${remainingHumans.length} ` + 
+                  `warden(s) left (${remainingHumansString})`);
+    
     const answer = await inquirer.prompt({
         type: 'list',
         name: 'confirm',
@@ -83,7 +97,7 @@ async function promptForRemovalOfHuman(human: Human, wardenFile: WardenFile): Pr
 
 async function removeHumanFromWardenFile(human: Human, wardenFile: WardenFile): Promise<void> {
     const newHumans = wardenFile.humans.filter(h => human !== h);
-    
+    wardenFile.humans = newHumans;
 }
 
 async function replacePerson(person: string, wardenFile: WardenFile) {

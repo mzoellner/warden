@@ -1,14 +1,19 @@
 const cprint = require('color-print');
+import { promises } from 'fs';
 
 export type Human = {
     name: string;
     email: string;
 }
 
+export type WardenFileData = {
+    humans: Human[];
+}
+
 export class WardenFile {
     public readonly filePath: string = '';
-    public readonly humans: Array<Human> = [];
-
+    
+    public humans: Array<Human> = [];
     constructor (_filePath: string) {
         this.filePath = _filePath;
         const wardenFileData = this.readWardenFile(_filePath);
@@ -25,12 +30,22 @@ export class WardenFile {
         console.log(in_indent + cprint.toGreen(this.filePath) + ' ' + cprint.toCyan(' =>') + '\n\t' + in_indent + wardens);
     }
 
-    private readWardenFile (_filePath: string): WardenFile | null {
+    public async saveToDisk (): Promise<void> {
+        return await this.writeWardenFile(this.filePath, { humans: this.humans });
+    }
+
+    private readWardenFile (_filePath: string): WardenFileData | null {
             const wardenFileData: WardenFile = require(_filePath);
             if (!this.isWardenFileValid(wardenFileData, _filePath)) {
                 throw new Error('Invalid warden file: ' + _filePath);
             }
             return wardenFileData;
+    }
+
+    private async writeWardenFile (filePath: string, data: WardenFileData): Promise<void> {
+        const json = JSON.stringify(data, undefined, 4);
+        const requireStyleExport = `module.export = ${json}`;
+        await promises.writeFile(filePath, requireStyleExport);
     }
 
     private isWardenFileValid (wardenFileData: WardenFile, _filePath: string): boolean {

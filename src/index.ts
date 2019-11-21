@@ -4,14 +4,12 @@
 import { printWardensForBranch } from './commands/print-wardens-for-branch';
 import { printWardenForDirectory } from './commands/print-wardens-for-dir';
 import { retireWarden } from './commands/retire-warden';
-const path = require('path');
 const packageJSON = require('../package.json');
 
 // ******************************
 // Utilities:
 // ******************************
-
-const program = require('commander');
+import * as program from 'commander';
 
 // ******************************
 // Constants:
@@ -46,8 +44,9 @@ program
     .action((searchDir: string) => printWardenForDirectory(searchDir));
 
 program
-    .command('retire [person]')
+    .command('retire <person>')
     .description('Retire a warden')
+    .arguments('person')
     .action(async (person: string) => await retireWarden(person));
 
 program
