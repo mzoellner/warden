@@ -35,7 +35,8 @@ export class WardenFile {
     }
 
     private readWardenFile (_filePath: string): WardenFileData | null {
-            const wardenFileData: WardenFile = require(_filePath);
+            const wardenFileData: WardenFileData = require(_filePath);
+            console.log(wardenFileData);
             if (!this.isWardenFileValid(wardenFileData, _filePath)) {
                 throw new Error('Invalid warden file: ' + _filePath);
             }
@@ -44,11 +45,11 @@ export class WardenFile {
 
     private async writeWardenFile (filePath: string, data: WardenFileData): Promise<void> {
         const json = JSON.stringify(data, undefined, 4);
-        const requireStyleExport = `module.export = ${json}`;
+        const requireStyleExport = `module.exports = ${json}`;
         await promises.writeFile(filePath, requireStyleExport);
     }
 
-    private isWardenFileValid (wardenFileData: WardenFile, _filePath: string): boolean {
+    private isWardenFileValid (wardenFileData: WardenFileData, _filePath: string): boolean {
         if (!wardenFileData.humans || (!!wardenFileData.humans && !wardenFileData.humans.length)) {
             throw new Error('Warden file does not contain humans: ' + _filePath);
         }
