@@ -36,7 +36,7 @@ export class WardenFile {
 
     private readWardenFile (_filePath: string): WardenFileData | null {
             const wardenFileData: WardenFileData = require(_filePath);
-            console.log(wardenFileData);
+            // console.log(wardenFileData);
             if (!this.isWardenFileValid(wardenFileData, _filePath)) {
                 throw new Error('Invalid warden file: ' + _filePath);
             }

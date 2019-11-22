@@ -6,14 +6,14 @@ const fs = require('fs');
 export async function visitWardenFiles(
     directory: string,
     filter: ((wardenFile: WardenFile) => Promise<boolean>) | null,
-    action: ((wardenFile: WardenFile) => Promise<void>) | null): Promise<WardenFile[]> {
+    action: ((wardenFile: WardenFile) => Promise<void>) | null): Promise<Visit<WardenFile>[]> {
     return await visitDirectory(directory, filter, action);
 }
 
 async function visitDirectory(
     directory: string,
     filter: ((wardenFile: WardenFile) => Promise<boolean>) | null,
-    action: ((wardenFile: WardenFile) => Promise<void>) | null): Promise<WardenFile[]> {
+    action: ((wardenFile: WardenFile) => Promise<void>) | null): Promise<Visit<WardenFile>[]> {
 
     if(ignoreDirectory(directory)) {
         return [];
@@ -32,14 +32,14 @@ function ignoreDirectory(directory: string) {
 async function visitSubdirectories(
     directory: string,
     filter: ((wardenFile: WardenFile) => Promise<boolean>) | null,
-    action: ((wardenFile: WardenFile) => Promise<void>) | null): Promise<WardenFile[]> {
+    action: ((wardenFile: WardenFile) => Promise<void>) | null): Promise<Visit<WardenFile>[]> {
     const subDirectories = (fs.readdirSync(directory) as string[])
         .map(f => path.resolve(directory, f))
         .map(f => ({ f, stats: fs.statSync(f)}))
         .filter(_ => _.stats.isDirectory())
         .map(_ => _.f);
 
-    let wardenFiles: WardenFile[] = [];
+    let wardenFiles: Visit<WardenFile>[] = [];
 
     for (const subdir of subDirectories) {
         wardenFiles = [...wardenFiles, ...await visitDirectory(subdir, filter, action)];
@@ -51,21 +51,26 @@ async function visitSubdirectories(
 async function visitWardenFile(
     directory: string, 
     filter: ((wardenFile: WardenFile) => Promise<boolean>) | null, 
-    action: ((wardenFile: WardenFile) => Promise<void>) | null): Promise<WardenFile|undefined> {
+    action: ((wardenFile: WardenFile) => Promise<void>) | null): Promise<Visit<WardenFile>|undefined> {
     let wardenFilePath = path.resolve(directory, '.warden');
     if (fs.existsSync(wardenFilePath)) {
         const wardenFile = new WardenFile(wardenFilePath);
 
         if (filter && await filter(wardenFile) === false) {
-            return undefined;
+            return { wasFiltered: true, file: wardenFile };
         }
 
         if (action) {
             await action(wardenFile);
         }
 
-        return wardenFile;
+        return { wasFiltered: false, file: wardenFile };
     }
 
     return undefined;
+}
+
+export type Visit<T> = {
+    wasFiltered: boolean;
+    file: T
 }
