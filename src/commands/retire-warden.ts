@@ -131,11 +131,13 @@ async function replaceHuman(human: Human, wardenFile: WardenFile, uniqueHumans: 
                         type: 'list',
                         name: 'replacement',
                         choices: [
-                            ...uniqueHumans.map(h => {
-                                return {
-                                    name: `${h.name} <${h.email}>`,
-                                    value: h
-                                };
+                            ...uniqueHumans
+                                .filter(h => h !== human)
+                                .map(h => {
+                                    return {
+                                        name: `${h.name} <${h.email}>`,
+                                        value: h
+                                    };
                             })
                         ],
                         message: `Who do you want to replace ${human.name} with ?`
