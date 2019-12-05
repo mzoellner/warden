@@ -2,7 +2,6 @@ const cprint = require('color-print');
 import { visitWardenFiles, Visit } from '../lib/visitWarden';
 import { WardenFile, Human } from '../lib/WardenFile';
 import * as inquirer from 'inquirer';
-// const inquirer = require('inquirer');
 
 export async function retireWarden(person: string): Promise<void> {
     cprint.yellow(cprint.toBold(`Retiring ${person}...`));
@@ -79,7 +78,16 @@ async function retireHuman(human: Human, wardenFile: WardenFile, uniqueHumans: H
     }
 }
 
-async function promptForRemovalOfHuman(human: Human, remainingHumans: Human[], wardenFile: WardenFile): Promise<any> {
+type ReplacementPromptAnswer = { 
+    replacementOfHuman: 'y' | 'n' | 's'
+}
+
+type RemovalPromptAnswer = {
+    removalOfHuman: 'y' | 'n' | 's'
+}
+
+
+async function promptForRemovalOfHuman(human: Human, remainingHumans: Human[], wardenFile: WardenFile): Promise<RemovalPromptAnswer> {
     const remainingHumansString = remainingHumans.map(h => h.name).join(', ');
     
     const question = cprint.toYellow(`Suggesting to remove ${cprint.toBold(human.name)} `) + 
@@ -89,7 +97,7 @@ async function promptForRemovalOfHuman(human: Human, remainingHumans: Human[], w
 
     console.log(question);
     console.log();
-    const answer = await inquirer.prompt({
+    const answer = await inquirer.prompt<RemovalPromptAnswer>({
         type: 'list',
         name: 'removalOfHuman',
         message: cprint.toYellow(`Do you want to remove ${cprint.toBold(human.name)} `) + cprint.toYellow(`from ${cprint.toBold(wardenFile.filePath)} ?`),
@@ -103,20 +111,22 @@ async function promptForRemovalOfHuman(human: Human, remainingHumans: Human[], w
     return answer;
 }
 
-async function promptForReplacementOfHuman(human: Human, wardenFile: WardenFile): Promise<any> {
+async function promptForReplacementOfHuman(human: Human, wardenFile: WardenFile): Promise<ReplacementPromptAnswer> {
     
     cprint.yellow(`Suggesting to replace ${human.name} ` +
                   `with another person in ${wardenFile.filePath} ` + 
                   `as there is no warden left`);
     
-    const answer = await inquirer.prompt({
+
+
+    const answer = await inquirer.prompt<ReplacementPromptAnswer>({
         type: 'list',
         name: 'replacementOfHuman',
         message: `Do you want to replace ${human.name} with another person ?`,
         choices: [
             { name: `Yes, replace ${human.name} with other person.`, value: 'y', short: 'Yes' },
             { name: `No, instead remove ${human.name} from list.`, value: 'n', short: 'No' },
-            { name: `Skip this file`, value: 's', short: 'Skiup' }
+            { name: `Skip this file`, value: 's', short: 'Skip' }
         ]
     });
 
