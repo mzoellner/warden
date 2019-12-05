@@ -113,16 +113,18 @@ async function promptForRemovalOfHuman(human: Human, remainingHumans: Human[], w
 
 async function promptForReplacementOfHuman(human: Human, wardenFile: WardenFile): Promise<ReplacementPromptAnswer> {
     
-    cprint.yellow(`Suggesting to replace ${human.name} ` +
-                  `with another person in ${wardenFile.filePath} ` + 
-                  `as there is no warden left`);
+    const question = cprint.toYellow(`Suggesting to replace ${cprint.toBold(human.name)} `) +
+                    cprint.toYellow(`with another person in ${cprint.toBold(wardenFile.filePath)} `) + 
+                    cprint.toYellow(`as there is no warden left`);
     
 
+    console.log(question);
+    console.log();
 
     const answer = await inquirer.prompt<ReplacementPromptAnswer>({
         type: 'list',
         name: 'replacementOfHuman',
-        message: `Do you want to replace ${human.name} with another person ?`,
+        message: cprint.toYellow(`Do you want to replace ${cprint.toBold(human.name)}`) + cprint.toYellow(` with another person ?`),
         choices: [
             { name: `Yes, replace ${human.name} with other person.`, value: 'y', short: 'Yes' },
             { name: `No, instead remove ${human.name} from list.`, value: 'n', short: 'No' },
@@ -134,7 +136,7 @@ async function promptForReplacementOfHuman(human: Human, wardenFile: WardenFile)
 }
 
 async function removeHumanFromWardenFile(human: Human, wardenFile: WardenFile): Promise<void> {
-    cprint.green(`Removing ${human.name} from list`);
+    cprint.green(cprint.toBold(`Removing ${human.name} from list`, true), true);
     const newHumans = wardenFile.humans.filter(h => human !== h);
     wardenFile.humans = newHumans;
 }
@@ -163,7 +165,7 @@ async function replaceHuman(human: Human, wardenFile: WardenFile, uniqueHumans: 
 }
 
 async function replaceHumanWith(human: Human, wardenFile: WardenFile, replacement: Human) {
-    cprint.red(`Replacing ${human.name} with... ${replacement.name}`);
+    cprint.green(cprint.toBold(`Replacing ${human.name} with ${replacement.name}`, true), true);
 
     const newHumans = [...wardenFile.humans.filter(h => h !== human), replacement];
     wardenFile.humans = newHumans;
@@ -174,7 +176,7 @@ function getRemainingHumans (human: Human, wardenFile: WardenFile): Human[] {
 }
 
 function skipFile (): void {
-    cprint.red(`Skipping file`);
+    cprint.green(cprint.toBold(`Skipping file`, true), true);
 }
 
 function getUniqueHumans (visits: Visit<WardenFile>[]) {
