@@ -1,8 +1,8 @@
 const cprint = require('color-print');
 import { visitWardenFiles, Visit } from '../lib/visitWarden';
 import { WardenFile, Human } from '../lib/WardenFile';
-// import * as inquirer from 'inquirer';
-const inquirer = require('inquirer');
+import * as inquirer from 'inquirer';
+// const inquirer = require('inquirer');
 
 export async function retireWarden(person: string): Promise<void> {
     cprint.yellow(`Retiring ${person}...`);
@@ -14,7 +14,7 @@ export async function retireWarden(person: string): Promise<void> {
     const uniqueHumans = getUniqueHumans(visits);
 
     for (let wardenFile of visits.filter(f => f.wasFiltered === false).map(f => f.file)) {
-        await retirePerson(person, wardenFile);
+        await retirePerson(person, wardenFile, uniqueHumans);
         wardenFile.saveToDisk();
     }
 };
@@ -33,13 +33,13 @@ function getMatchingHumans(person: string, wardenFile: WardenFile): Human[] {
     return humans.filter(human => matchEmail(person, human) || matchName(person, human));
 }
 
-async function retirePerson(person: string, wardenFile: WardenFile) {
+async function retirePerson(person: string, wardenFile: WardenFile, uniqueHumans: Human[]) {
     const matchingHumans = getMatchingHumans(person, wardenFile);
 
     if (matchingHumans.length === 1) {
-        await retireHuman(matchingHumans[0], wardenFile);
+        await retireHuman(matchingHumans[0], wardenFile, uniqueHumans);
     } else {
-        await retireHuman(await selectHuman(matchingHumans, wardenFile), wardenFile);
+        await retireHuman(await selectHuman(matchingHumans, wardenFile), wardenFile, uniqueHumans);
     }
 };
 
@@ -49,7 +49,7 @@ async function selectHuman(matchingHumans: Human[], wardenFile: WardenFile): Pro
     return Promise.resolve(matchingHumans[0]);
 }
 
-async function retireHuman(human: Human, wardenFile: WardenFile): Promise<void> {
+async function retireHuman(human: Human, wardenFile: WardenFile, uniqueHumans: Human[]): Promise<void> {
     if (wardenFile.humans.length > 1) {
         const remainingHumans = getRemainingHumans(human, wardenFile);
 
@@ -58,7 +58,7 @@ async function retireHuman(human: Human, wardenFile: WardenFile): Promise<void> 
         if (answer.removalOfHuman === 'y') {
             await removeHumanFromWardenFile(human, wardenFile);
         } else if (answer.removalOfHuman === 'n') {
-            await replaceHuman(human, wardenFile);
+            await replaceHuman(human, wardenFile, uniqueHumans);
         } else {
             skipFile();
         }
@@ -66,7 +66,7 @@ async function retireHuman(human: Human, wardenFile: WardenFile): Promise<void> 
         const answer = await promptForReplacementOfHuman(human, wardenFile);
 
         if (answer.replacementOfHuman === 'y') {
-            await replaceHuman(human, wardenFile);
+            await replaceHuman(human, wardenFile, uniqueHumans);
         } else if (answer.replacementOfHuman === 'n') {
             await removeHumanFromWardenFile(human, wardenFile);
         } else {
@@ -123,17 +123,30 @@ async function removeHumanFromWardenFile(human: Human, wardenFile: WardenFile): 
     wardenFile.humans = newHumans;
 }
 
-async function replaceHuman(human: Human, wardenFile: WardenFile) {
-    const answers = await inquirer
-                .prompt([
+async function replaceHuman(human: Human, wardenFile: WardenFile, uniqueHumans: Human[]) {
+    type ReplacementAnswer = { replacement: Human };
+    const answer = await inquirer
+                .prompt<ReplacementAnswer>(
                     {
-                        type: 'input',
+                        type: 'list',
                         name: 'replacement',
+                        choices: [
+                            ...uniqueHumans.map(h => {
+                                return {
+                                    name: `${h.name} <${h.email}>`,
+                                    value: h
+                                };
+                            })
+                        ],
                         message: `Who do you want to replace ${human.name} with ?`
                     }
-                ]);
-    console.log(answers);
-    cprint.red(`Replacing ${human.name} with...`);
+                );
+    await replaceHumanWith(human, wardenFile, answer.replacement);
+}
+
+async function replaceHumanWith(human: Human, wardenFile: WardenFile, replacement: Human) {
+    cprint.red(`Replacing ${human.name} with... ${replacement.name}`);
+    // wardenFile.humans = newHumans;
 }
 
 function getRemainingHumans (human: Human, wardenFile: WardenFile): Human[] {
