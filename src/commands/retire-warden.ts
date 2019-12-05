@@ -148,7 +148,9 @@ async function replaceHuman(human: Human, wardenFile: WardenFile, uniqueHumans: 
 
 async function replaceHumanWith(human: Human, wardenFile: WardenFile, replacement: Human) {
     cprint.red(`Replacing ${human.name} with... ${replacement.name}`);
-    // wardenFile.humans = newHumans;
+
+    const newHumans = [...wardenFile.humans.filter(h => h !== human), replacement];
+    wardenFile.humans = newHumans;
 }
 
 function getRemainingHumans (human: Human, wardenFile: WardenFile): Human[] {
