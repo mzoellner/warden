@@ -158,7 +158,7 @@ async function replaceHuman(human: Human, wardenFile: WardenFile, uniqueHumans: 
                                     };
                             })
                         ],
-                        message: `Who do you want to replace ${human.name} with ?`
+                        message: cprint.toYellow(`Who do you want to replace ${cprint.toBold(human.name)} `) + cprint.toYellow(`with ?`)
                     }
                 );
     await replaceHumanWith(human, wardenFile, answer.replacement);
