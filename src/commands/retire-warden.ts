@@ -5,7 +5,7 @@ import * as inquirer from 'inquirer';
 // const inquirer = require('inquirer');
 
 export async function retireWarden(person: string): Promise<void> {
-    cprint.yellow(`Retiring ${person}...`);
+    cprint.yellow(cprint.toBold(`Retiring ${person}...`));
     
     const currentDirectory = process.cwd();
 
@@ -14,6 +14,10 @@ export async function retireWarden(person: string): Promise<void> {
     const uniqueHumans = getUniqueHumans(visits);
 
     for (let wardenFile of visits.filter(f => f.wasFiltered === false).map(f => f.file)) {
+
+        console.log();
+        cprint.yellow('---------------------------------------------------------');
+        
         await retirePerson(person, wardenFile, uniqueHumans);
         wardenFile.saveToDisk();
     }
@@ -76,22 +80,24 @@ async function retireHuman(human: Human, wardenFile: WardenFile, uniqueHumans: H
 }
 
 async function promptForRemovalOfHuman(human: Human, remainingHumans: Human[], wardenFile: WardenFile): Promise<any> {
-    const remainingHumansString = remainingHumans.map(h => h.name).join(',');
+    const remainingHumansString = remainingHumans.map(h => h.name).join(', ');
     
-    cprint.yellow(`Suggesting to remove ${human.name} ` + 
-                  `from ${wardenFile.filePath} as there ` + 
-                  `is/are still ${remainingHumans.length} ` + 
-                  `warden(s) left (${remainingHumansString})`);
-    
+    const question = cprint.toYellow(`Suggesting to remove ${cprint.toBold(human.name)} `) + 
+                  cprint.toYellow(`from ${cprint.toBold(wardenFile.filePath)} `) + 
+                  cprint.toYellow(`as there is/are still ${cprint.toBold(remainingHumans.length)} `) + 
+                  cprint.toYellow(`warden(s) left (${cprint.toBold(remainingHumansString)})`);
+
+    console.log(question);
+    console.log();
     const answer = await inquirer.prompt({
         type: 'list',
         name: 'removalOfHuman',
-        message: `Do you want to remove ${human.name} from ${wardenFile.filePath} ?`,
+        message: cprint.toYellow(`Do you want to remove ${cprint.toBold(human.name)} `) + cprint.toYellow(`from ${cprint.toBold(wardenFile.filePath)} ?`),
         default: 'y',
         choices: [ 
             { name: `Yes, remove ${human.name} from list`, value: 'y', short: 'Yes'}, 
             { name: `No, replace ${human.name} with other person`, value: 'n', short: 'No' }, 
-            { name: `Skip this file`, value: 's', short: 'Skip' }
+            { name: `No, skip this file`, value: 's', short: 'Skip' }
         ]
     });
     return answer;
